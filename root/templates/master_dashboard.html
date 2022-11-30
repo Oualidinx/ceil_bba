@@ -1,0 +1,67 @@
+{% extends "admin_layout.html" %}
+{% block main_tag %}
+    {% with messages = get_flashed_messages(with_categories = true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert  alert-{{ category }}">
+                     {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="row">
+        <div class="col-md">
+            <div class="card justify-content-center">
+                <div class="card-header">
+                    <h3 class="h3">
+                        Information sur la session actuelle</h3>
+                </div>
+                <div class="card-body">
+                    <table style="font-size: 16px;">
+                        <tr >
+                            <td style="font-weight: bold;">Titre:    </td> <td> {{ _session.label }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Date début: </td> <td> {{ _session.start_date }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Date fin: </td><td> {{ _session.end_date }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">
+                                Les formations:
+                            </td>
+                            <td>
+                                {% if _session.courses %}
+
+                                        <ol>
+                                            {% for cours in _session.courses %}
+                                                <li>{{ cours.label }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                {% else %}
+                                    Aucune formation
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <form method="post">
+                            {{ form.hidden_tag() }}
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        {{ form.enable.label(class="form-check-label") }}
+                                        {{ form.enable(class="form-check-input") }}
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        {{ form.submit(class="btn btn-sm btn-secondary") }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </form>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

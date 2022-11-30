@@ -1,0 +1,47 @@
+{% extends "admin_layout.html" %}
+{% block additional_styles %}
+    <link href="{{ url_for('static', filename='dist/theme/mermaid.min.css') }}" rel="stylesheet" />
+{% endblock %}
+{% block main_tag %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Les Formations</h4>
+                </div>
+                <div class="card-body">
+                    <div id="table"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block additional_scripts %}
+    <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
+    <script>
+      new gridjs.Grid({
+        columns: [
+          { id: 'id', name: 'ID' },
+          { id: 'label', name: 'Titre' },
+          { id: 'status', name: 'Status' },
+          { id: 'session', name: 'Session' },
+        ],
+        data: [
+          {% for course in courses %}
+            {
+                id: '{{ course["id"] }}',
+                label: '{{ course["label"] }}',
+                status: '<span class="badge badge-pill badge-{{ course["status"][1] }}">{{course["status"][0]}}</span>',
+                session: '{{ course["station"] }}'
+            },
+          {% endfor %}
+        ],
+        search: {
+          selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
+        },
+        sort: true,
+        pagination: true
+      }).render(document.getElementById('table'));
+    </script>
+
+{% endblock %}

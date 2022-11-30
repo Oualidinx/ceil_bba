@@ -1,0 +1,85 @@
+{% extends "user_dashboard.html" %}
+{% block additional_styles %}
+    <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block main_tag %}
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category , message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="card justify-content-around">
+            <div class="card-header">
+                <h3 class="h3">
+                    Information personnelles
+                </h3>
+            </div>
+            <div class="card-body">
+                <table style="font-size: 16px;">
+                    <tr >
+                        <td style="font-weight: bold;">Nom:    </td> <td> {{ current_user.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Prénom: </td> <td> {{ current_user.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Adresse électronique: </td><t></t><td> {{ current_user.email }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <h3 class="h3">
+                Sélectionnez votre choix
+            </h3>
+        </div>
+    {% if _session.is_disabled and _session.is_active %}
+
+
+        <form method="post">
+            {{form.hidden_tag()}}
+
+            <div class="row">
+                <div class="col-sm-2">
+                    {{ form.course.label(class='form-control-label') }}
+                </div>
+                <div class="col-sm-6">
+                     {% if form.course.errors %}
+                        {{form.course(class="select-course form-control form-control-md")}}
+                        {% for error in form.course.errors %}
+                            <div class="alert alert-danger">
+                                {{error}}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        {{form.course(class="select-course form-control form-control-md")}}
+                    {% endif %}
+                </div>
+                <div class="col-sm-4">
+                    {{form.submit(class="btn btn-md btn-primary")}}
+                </div>
+            </div>
+        </form>
+    {% else %}
+        <h5 class="text-center">Période d'inscription est terminée. Merci</h5>
+    {% endif %}
+    </div>
+
+{% endblock %}
+{% block additional_scripts %}
+    <script src="{{url_for('static', filename='js/select2.min.js')}}"></script>
+    <script>
+        $(document).ready(function (){
+            $('select-course').select2({
+                language:'fr'
+            })
+        })
+    </script>
+{% endblock additional_scripts%}
