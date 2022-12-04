@@ -10,7 +10,11 @@
                   <h4 class="card-title ">Les Etudiants Inscris dans la formation {{ formation }}</h4>
                 </div>
                 <div class="card-body">
-                    <div id="table"></div>
+                    {% if students %}
+                        <div id="table"></div>
+                    {% else %}
+                        <h3 class="h3"> Pas encore d'inscriptions</h3>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -19,6 +23,33 @@
 {% block additional_scripts %}
     <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
     <script>
-
+        new gridjs.Grid({
+            columns: [
+              { id: 'id', name: '#' },
+              { id: 'first_name', name: 'Nom' },
+              { id: 'last_name', name: 'Prénom' },
+              { id: 'email', name: 'Email' },
+              { id: 'status', name: 'Status'}
+            ],
+            data: [
+                  {% for student in students %}
+                        {
+                          id: '{{ student["id"] }}',
+                          first_name :'{{ student["first_name"] }}',
+                          last_name :'{{ student["last_name"] }}',
+                          email :'{{ student["email"] }}',
+                          status:   '{% if student["status"] == -1%} <span style="text-color:black; background-color:#E06000;">En attente</span> \
+                                    {%elif student["status"] == 1%} <span style="text-color:white; background-color:#004D33;">admis</span> \
+                                    {%else%} <span style="text-color:white; background-color:#A6001A;">non admis</span> \
+                                    {% endif %}'
+                        },
+                  {% endfor %}
+            ],
+            search: {
+              selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
+            },
+            sort: true,
+            pagination: true
+          }).render(document.getElementById('table'));
     </script>
 {% endblock %}

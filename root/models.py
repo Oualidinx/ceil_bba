@@ -26,6 +26,11 @@ class Course(db.Model):
     fk_session_id=db.Column(db.Integer, db.ForeignKey('session.id'))
     description = db.String(db.String(2500))
     on_test = db.Column(db.Boolean, default=False)
+    students = db.relationship('User', secondary="subscription",
+                               primaryjoin = "Course.id == foreign(Subscription.fk_course_id)",
+                               secondaryjoin="User.id == foreign(Subscription.fk_student_id)",
+                               viewonly = True
+                               )
 
     def to_dict(self):
         return dict(
@@ -125,6 +130,7 @@ class Subscription(db.Model):
     fk_student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     fk_course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
     is_waiting = db.Column(db.Boolean, default = False)
+    is_accepted = db.Column(db.Boolean, default = -1)
     subscription_date = db.Column(db.DateTime, default = datetime.utcnow())
     charges_paid = db.Column(db.Boolean, default = False)
 

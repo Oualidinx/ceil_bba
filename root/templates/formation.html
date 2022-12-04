@@ -25,6 +25,7 @@
           { id: 'label', name: 'Titre' },
           { id: 'status', name: 'Status' },
           { id: 'session', name: 'Session' },
+            {id:"link", name:"Les inscris"}
         ],
         data: [
           {% for course in courses %}
@@ -32,7 +33,8 @@
                 id: '{{ course["id"] }}',
                 label: '{{ course["label"] }}',
                 status: '<span class="badge badge-pill badge-{{ course["status"][1] }}">{{course["status"][0]}}</span>',
-                session: '{{ course["station"] }}'
+                session: '{{ course["station"] }}',
+                link: '<a href="{{ url_for(course["link"]) }}" class="btn btn-sm btn-success"><i class="fa fa-list"></i></a>'
             },
           {% endfor %}
         ],

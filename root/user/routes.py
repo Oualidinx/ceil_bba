@@ -29,7 +29,7 @@ def inscrire():
         subscription.fk_student_id = current_user.id
         database.session.add(subscription)
         database.session.commit()
-        flash('Votre choix a été confirmer. Merci','sucsess')
+        flash('Votre choix a été confirmer. Merci','success')
         return redirect(url_for('user_bp.inscrire'))
     return render_template('subscribe.html',form = form, _session = _session)
 

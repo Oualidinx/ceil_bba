@@ -1,9 +1,11 @@
-from flask import flash, redirect, render_template, url_for, session, request
+from flask import flash, redirect, render_template, url_for, session, request, abort
 from root import database
 from root.admin import admin_bp
-from root.models import Category, Course, CourseLanguage, LanguageLevel,Session
+from root.models import Category, Course, CourseLanguage, LanguageLevel,Session, User, Subscription
 from root.forms import CategoryForm,AddCourseForm, SessionForm, EnableSubscription
 import bleach
+from flask_login import login_required
+from sqlalchemy.sql import and_
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'dt', 'dd', 'table', 'tbody', 'thead',
                                       'section',
                                       'u', 'i', 'br', 'em', 'strong', 'p', 't']
@@ -49,7 +51,10 @@ def new_category():
 @admin_bp.post('/formation')
 # @login_required
 def formation():
-    courses =[obj.to_dict() for obj in Course.query.all()]
+    courses =[obj.to_dict().update({
+        'link': url_for('admin_bp.students', course_id = obj.id, session_id = Session.query.all()[-1])
+    }) for obj in Course.query.all()]
+
     return render_template('formation.html', courses=courses)
 
 
@@ -96,8 +101,19 @@ def new_session():
         database.session.commit()
         flash('Session ajoutée', 'success')
         return redirect(url_for('admin_bp.new_course'))
-    else:
-        print(session_form.errors)
     return render_template('new_course.html',form = AddCourseForm(), session_form = session_form)
+
+
+@admin_bp.get('/students/<int:course_id>/<int:session_id>')
+# @login_required
+def students(course_id, session_id):
+    _session = Session.query.get(session_id)
+    if not _session:
+        flash('Aucune session n\'est trouvée', 'warning')
+        return redirect(url_for('admin_bp.formation'))
+    course = Course.query.filter_by(session_id = session_id).filter_by(id = course_id).first()
+    liste = [obj.to_dict().update(status = Subscription.query.filter(and_(Subscription.fk_student_id == obj.id, Subscription.fk_course_id == course.id))).first().is_accepted for obj in course.students]
+    return render_template('students.html', formation = course.label, students = liste)
+
 
 
