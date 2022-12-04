@@ -19,27 +19,27 @@
 {% block additional_scripts %}
     <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
     <script>
-      new gridjs.Grid({
-        columns: [
-          { id: 'id', name: '#' },
-          { id: 'label', name: 'Titre' },
-          { id: 'is_disabled', name: 'Status' }
-        ],
-        data: [
-          {% for course in courses %}
-            {
-              id: '{{ course["id"] }}',
-              label: '{{ course["label"] }}',
-              is_disabled: '{% if course["is_disabled"] == True%} <h5 style="text-color:orange;">En attente</h5> {%else%} <h5 style="text-color:green;">acceptée</h5> {% endif %}'
+          new gridjs.Grid({
+            columns: [
+              { id: 'id', name: '#' },
+              { id: 'label', name: 'Titre' },
+              { id: 'is_disabled', name: 'Status' }
+            ],
+            data: [
+              {% for course in courses %}
+                {
+                  id: '{{ course["id"] }}',
+                  label: '{{ course["label"] }}',
+                  is_disabled: '{% if course["is_disabled"] == True%} <h5 style="text-color:#E06000;">En attente</h5> {%else%} <h5 style="text-color:#004D33;">acceptée</h5> {% endif %}'
+                },
+              {% endfor %}
+            ],
+            search: {
+              selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
             },
-          {% endfor %}
-        ],
-        search: {
-          selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
-        },
-        sort: true,
-        pagination: true
-      }).render(document.getElementById('table'));
+            sort: true,
+            pagination: true
+          }).render(document.getElementById('table'));
     </script>
 
 {% endblock %}

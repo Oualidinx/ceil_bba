@@ -50,7 +50,7 @@ def new_category():
 # @login_required
 def formation():
     courses =[obj.to_dict() for obj in Course.query.all()]
-    return render_template('subscriptions.html', courses=courses)
+    return render_template('formation.html', courses=courses)
 
 
 
@@ -99,3 +99,5 @@ def new_session():
     else:
         print(session_form.errors)
     return render_template('new_course.html',form = AddCourseForm(), session_form = session_form)
+
+
