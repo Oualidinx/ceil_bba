@@ -1,3 +1,7 @@
 venv
 migrations
 .idea
+__pycache__
+instance
+root/__pycache__
+root/*/__pycache__

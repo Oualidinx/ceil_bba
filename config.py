@@ -9,6 +9,10 @@ class Development(Config):
     SQLALCHEMY_DATABASE_URI = "postgresql://postgres:1091eb5a6c62@localhost/ceil_bba"
 
 
+class Testing(Config):
+    SQLALCHEMY_DATABASE_URI="sqlite:///database.db"
+
 config = {
-    "dev": Development
+    "dev": Development,
+    'test': Testing
 }
