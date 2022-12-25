@@ -17,7 +17,6 @@ def define():
     session['title'] = "CEIL Bordj Bou Arreridj"
 
 def send_reset_email(user):
-
     # token = user.get_token()
     user_name = current_app.config['MAIL_USERNAME']
     msg = Message('Password Reset Request',
@@ -77,7 +76,6 @@ def register():
         flash('Votre inscription a terminé avec succès.\nVous pouvez vous connecter afin de procèder votre inscription à une formation',"success")
         return redirect(url_for('auth_bp.login'))
     return render_template('registration.html', form = form)
-
 
 
 @auth_bp.get('/request_token')

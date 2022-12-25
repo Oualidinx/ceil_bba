@@ -1,0 +1,42 @@
+<html>
+       <head>
+           <title>Reçu de paiement</title>
+
+           <style>
+                @page {
+                    size: A5 landscape;
+                    margin: 1.5mm;
+                }
+           </style>
+      </head>
+      <body>
+      <table>
+          <tr>
+            <td>Université Mohamed El Bachir El Ibrahimi</td>
+            <td style="text-align: right">Année Scolaire: {{ _session.label }}</td>
+          </tr>
+          <tr>
+            <td><b>C</b>entre d'<b>E</b>nseignement <b>I</b>ntensive de <b>L</b>angues</td>
+            <td style="text-align: right">Date: {{ date }}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td style="text-align: right">N°: {{ number }}</td>
+          </tr>
+          <tr style="text-align: center">
+            <td><h2>Reçu de Paiement</h2></td>
+          </tr>
+          <tr>
+              <td>Nom et prénom: </td> <td  style="font-style: oblique;">{{ student.first_name }} {{ student.last_name }}</td>
+          </tr>
+          <tr>
+              <td>La somme en chiffres: </td> <td  style="font-style: oblique;">{{ '{:20,.2f}'.format(cost) }}</td>
+          </tr>
+          <tr><td>La somme en lettres: </td></tr>
+          <tr><td style="font-style: oblique;"> {{ cost_letters }} </td></tr>
+          <tr>
+              <td>Note: Le propriétaire de ce reçu devera l'imprimer pour être validé par la direction du centre et le joindre au dossier d'inscription</td>
+          </tr>
+      </table>
+      </body>
+ </html>

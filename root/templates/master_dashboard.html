@@ -1,4 +1,12 @@
 {% extends "admin_layout.html" %}
+{% block additional_styles %}
+    <style>
+        table {
+          border-collapse:separate;
+          border-spacing: 0 1em;
+        }
+    </style>
+{% endblock %}
 {% block main_tag %}
     {% with messages = get_flashed_messages(with_categories = true) %}
         {% if messages %}
@@ -10,7 +18,7 @@
         {% endif %}
     {% endwith %}
     <div class="row">
-        <div class="col-md">
+        <div class="col-lg">
             <div class="card justify-content-center">
                 <div class="card-header">
                     <h3 class="h3">
@@ -18,10 +26,10 @@
                 </div>
                 <div class="card-body">
                     <table style="font-size: 16px;">
-                        <tr >
+                        <tr>
                             <td style="font-weight: bold;">Titre:    </td> <td> {{ _session.label }}</td>
                         </tr>
-                        <tr>
+                        <tr >
                             <td style="font-weight: bold;">Date début: </td> <td> {{ _session.start_date }}</td>
                         </tr>
                         <tr>
@@ -49,14 +57,28 @@
                             <tr>
                                 <td>
                                     <div class="form-group">
-                                        {{ form.enable.label(class="form-check-label") }}
-                                        {{ form.enable(class="form-check-input") }}
+                                        {{ form.enable.label(class='form-control-label', style="font-weight: bold;") }}
+                                        <div class="form-check form-check-inline">
+
+                                            {% for subfield in form.enable %}
+                                                <div class="form-check form-check-inline">
+                                                 {{ subfield(class="form-check-input") }}
+                                                 {{ subfield.label(class='form-check-label') }}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+
                                     </div>
                                     <br>
                                     <div class="form-group">
                                         {{ form.submit(class="btn btn-sm btn-secondary") }}
                                     </div>
                                 </td>
+                                <td style="font-weight: bold;">Actuellement: {% if _session.is_disabled %}
+                                    Inscriptions sont fermées
+                                    {% else %}
+                                        Inscriptions sont ouvertes
+                                {% endif %} </td>
                             </tr>
                         </form>
                     </table>

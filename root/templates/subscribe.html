@@ -40,7 +40,7 @@
                 Sélectionnez votre choix
             </h3>
         </div>
-    {% if _session.is_disabled and _session.is_active %}
+    {% if not _session.is_disabled and _session.is_active %}
 
 
         <form method="post">
@@ -68,7 +68,7 @@
             </div>
         </form>
     {% else %}
-        <h5 class="text-center">Période d'inscription est terminée. Merci</h5>
+        <h5 class="text-center">Période d'inscription est terminée ou pas encore disponible. Merci</h5>
     {% endif %}
     </div>
 

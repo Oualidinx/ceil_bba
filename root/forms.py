@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm, Form
 from wtforms.validators import DataRequired, ValidationError, EqualTo, Length
-from wtforms import SubmitField, StringField, PasswordField, TextAreaField, BooleanField, FieldList, FormField
+from wtforms import SubmitField, StringField, PasswordField, TextAreaField, BooleanField, RadioField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.fields.html5 import DateField, EmailField
 from root.models import User, Language, Session, Course, Category, Level
@@ -82,13 +82,18 @@ class RegistrationForm(FlaskForm):
 
 class AddCourseForm(FlaskForm):
     label = StringField('Libellé: ', validators=[DataRequired(message="Champs obligatoire")])
-    price = StringField('Prix:', validators=[DataRequired(message="Champs obligatoire")])
+    price = StringField('Prix:')# validators=[DataRequired(message="Champs obligatoire")]
     session = QuerySelectField('Session: ', query_factory=lambda : Session.query.filter_by(is_active = True).filter_by(is_disabled = False).all())
     language = QuerySelectField('Langue: ', query_factory=lambda : Language.query.all())
     level = QuerySelectField('Niveau: ', query_factory=lambda : Level.query.all())
-    on_test = BooleanField('Teste de niveau: ', validators=[DataRequired()])
+    limit_number = StringField('Nombre Maximum des inscrits:', validators=[DataRequired('Ce champs est obligatoire')])
+    on_test = BooleanField('Teste de niveau: ')
     description = TextAreaField('Description sur la formation: ', validators=[Length(max=2500)])
     submit = SubmitField('Confirmer')
+
+    def validate_limit_number(self, limit_number):
+        if int(limit_number.data) < 0:
+            raise ValidationError('Ce nombre doit être supérieur à 0')
 
 
 class CoursesForm(Form):
@@ -137,6 +142,7 @@ class RequestToken(FlaskForm):
 
 class CategoryForm(FlaskForm):
     label = StringField('Libellé: ', validators=[DataRequired()])
+    price = StringField("Prix par la catégorie: ", validators=[DataRequired("Champs obligatoire")])
     submit = SubmitField('Confirmer')
 
     def validate_label(self, label):
@@ -146,5 +152,19 @@ class CategoryForm(FlaskForm):
 
 
 class EnableSubscription(FlaskForm):
-    enable = BooleanField('Ouvrir/fermer les inscriptions: ')
+    enable = RadioField('Ouvrir/fermer les inscriptions: ', choices=[('o', 'Ouvrir'),('f','Fermer')])
     submit = SubmitField('Confirmer les info.')
+
+
+class EditCategoryForm(FlaskForm):
+    id = StringField()
+    label = StringField('Titre de catégorie: ')
+    price = StringField("Prix par la catégorie: ", validators=[DataRequired("Champs obligatoire")])
+    submit = SubmitField('Mettre à jour')
+    def validate_price(self, price):
+        if float(price.data) < 0:
+            raise ValidationError('Valeur ne doit pas inférieur de 0')
+
+
+class EditCourseForm(AddCourseForm):
+    submit = SubmitField('Confirmer')

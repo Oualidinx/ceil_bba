@@ -13,8 +13,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -32,6 +32,19 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="3e0c2fcb-734a-4e8a-aa6d-bb4de9d56761" />
+        <option name="url" value="https://github.com/Oualidinx/ceil_bba.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -47,7 +60,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "//wsl$/Ubuntu/home/oualidinx/coding_projects/CEIL_BBA/root/static/css",
+    "last_opened_file_path": "//wsl$/Ubuntu/home/oualidinx/coding_projects/CEIL_BBA/instance/database.db",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -58,7 +71,8 @@
   "keyToStringList": {
     "DatabaseDriversLRU": [
       "java.sql.Driver",
-      "postgresql"
+      "postgresql",
+      "sqlite"
     ]
   }
 }]]></component>
@@ -71,11 +85,11 @@
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\admin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\webfonts" />
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static" />
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\js" />
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\css" />
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\dist\theme" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\admin" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -101,7 +115,13 @@
       <workItem from="1669647911504" duration="11995000" />
       <workItem from="1669824226161" duration="10126000" />
       <workItem from="1670167599651" duration="2949000" />
-      <workItem from="1670174019103" duration="11725000" />
+      <workItem from="1670174019103" duration="13697000" />
+      <workItem from="1670776675849" duration="8931000" />
+      <workItem from="1670945388267" duration="5865000" />
+      <workItem from="1671462228837" duration="283000" />
+      <workItem from="1671462524198" duration="8135000" />
+      <workItem from="1671896555932" duration="16297000" />
+      <workItem from="1671971385507" duration="29325000" />
     </task>
     <servers />
   </component>

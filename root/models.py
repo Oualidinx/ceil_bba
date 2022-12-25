@@ -24,7 +24,7 @@ class Course(db.Model):
     price = db.Column(db.Float, default = 0)
     is_disabled = db.Column(db.Boolean, default = False)
     fk_session_id=db.Column(db.Integer, db.ForeignKey('session.id'))
-    description = db.String(db.String(2500))
+    description = db.Column(db.String(2500))
     on_test = db.Column(db.Boolean, default=False)
     students = db.relationship('User', secondary="subscription",
                                primaryjoin = "Course.id == foreign(Subscription.fk_course_id)",
@@ -36,18 +36,45 @@ class Course(db.Model):
         return dict(
             id = self.id,
             label = self.label,
-            status = ('Désactivé','warning') if not self.is_disabled else ("Activé", 'success'),
-            session=Session.query.get(self.fk_session_id).label
+            status = ('Désactivé','#e06000') if self.is_disabled else ("Activé", '#007256'),
+            session=Session.query.get(self.fk_session_id).label,
+            session_id=self.fk_session_id
         )
+
+    def __repr__(self):
+        return f'{self.label}'
+
+
+class LogsUserPrice(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    fk_category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    previous_value = db.Column(db.Float, default = 0)
+    last_modification = db.Column(db.DateTime, default=datetime.utcnow())
+    updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return f'category={Category.query.get(self.fk_category_id).label}, \
+                 current value = {Category.query.get(self.fk_category_id).price}, \
+                 previous value = {self.previous_value}'
 
 
 class Category(db.Model):
     __tablename__="category"
     id = db.Column(db.Integer, primary_key = True)
     label = db.Column(db.String(100))
+    price = db.Column(db.Float, default = 0)
+    price_letters = db.Column(db.String(1500))
     students = db.relationship('User', backref="category_students", lazy="subquery")
+
     def __repr__(self):
         return f'{self.label}'
+
+    def to_dict(self):
+        return dict(
+            id = self.id,
+            label = self.label,
+            price = self.price
+        )
 
 
 class Level(db.Model):
@@ -76,12 +103,25 @@ class User(UserMixin, db.Model):
                                     primaryjoin="User.id==foreign(Subscription.fk_student_id)",
                                     secondaryjoin="Course.id == foreign(Subscription.fk_course_id)",
                                     viewonly = True)
+
     def to_dict(self):
         return dict(
             id=self.id,
             username=self.username,
             role=self.role,
         )
+
+    def details(self):
+        return dict(
+            first_name = self.first_name,
+            last_name = self.last_name,
+            email = self.email,
+            birthday = self.birthday.date()
+        )
+
+    def details_courses(self):
+        if self.courses:
+            return [[(self.id,self.first_name, self.last_name, self.email,self.birthday.date(),obj.label)] for obj in self.courses]
 
     def get_token(self, expires_in=600):
         return jwt.encode(
@@ -129,11 +169,30 @@ class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     fk_student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     fk_course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-    is_waiting = db.Column(db.Boolean, default = False)
-    is_accepted = db.Column(db.Boolean, default = -1)
+    is_waiting = db.Column(db.Boolean, default = True)
+    is_accepted = db.Column(db.Integer, default = -1)
     subscription_date = db.Column(db.DateTime, default = datetime.utcnow())
     charges_paid = db.Column(db.Boolean, default = False)
 
+    def to_dict(self):
+        return dict(
+            date = self.subscription_date.date(),
+            course = Course.query.get(self.fk_course_id).label,
+            is_waiting = self.is_waiting,
+            is_accepted = self.is_accepted,
+            session = Session.query.get(Course.query.get(self.fk_course_id).fk_session_id)
+        )
+
+    def __repr__(self):
+        return dict(
+            id=self.fk_student_id,
+            first_name=User.query.get(self.fk_student_id).first_name,
+            last_name=User.query.get(self.fk_student_id).last_name,
+            email=User.query.get(self.fk_student_id).email,
+            birthday=User.query.get(self.fk_student_id).birthday.date(),
+            course={'label': Course.query.get(self.fk_course_id).label, 'id':self.fk_course_id},
+            status = self.is_accepted
+        )
 
 class Note(db.Model):
     __tablename__="note"
@@ -155,6 +214,8 @@ class CourseLanguage(db.Model):
     __tablename__="course_language"
     id = db.Column(db.Integer, primary_key = True)
     fk_level_id = db.Column(db.Integer, db.ForeignKey('level.id'))
+    limit_number = db.Column(db.Integer, default = 0)
+    actual_students_number = db.Column(db.Integer, default = 0)
     fk_language_id = db.Column(db.Integer, db.ForeignKey('language.id'))
     fk_course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
 

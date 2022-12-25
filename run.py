@@ -2,6 +2,6 @@ from root import create_app
 import os
 from dotenv import load_dotenv
 load_dotenv('.env')
-app = create_app(os.environ.get('FLASK_ENV'))
+app = create_app("prod")
 if __name__=="__main__":
-    app.run()
+    app.run(debug=False)

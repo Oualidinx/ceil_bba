@@ -1,25 +1,7 @@
-{% extends "master_dashboard.html" %}
-{% block additional_styles %}
-
-{% endblock %}
+{% extends "admin_layout.html" %}
 {% block main_tag %}
     <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category , message in messages %}
-                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                        <div class="toast align-items-center text-white bg-{{ category }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                          <div class="d-flex">
-                            <div class="toast-body">
-                            {{ message }}
-                           </div>
-                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                          </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+
         <div class="row">
             <form method="post">
                 {{form.hidden_tag()}}
@@ -39,6 +21,7 @@
                             {% endif %}
                         </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="mb-4">
@@ -67,13 +50,14 @@
             </form>
         </div>
     </div>
-
+{% endblock %}
+{% block additional_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/summernote.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css')}}">
 {% endblock %}
 
-{% block additional_scripts %}
-    <script !src="">
-        $(document).ready(function (){
-            $('.toast').toast('show');
-        });
-    </script>
+{% block actual_title %}
+    <div class="mb-4">
+        Mise à jour de categorie
+    </div>
 {% endblock %}

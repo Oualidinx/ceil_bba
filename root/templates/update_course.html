@@ -1,10 +1,4 @@
 {% extends "admin_layout.html" %}
-{% block additional_styles %}
-    <link href="{{ url_for('static', filename='dist/theme/mermaid.min.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/summernote.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}">
-{% endblock %}
-
 {% block main_tag %}
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -24,78 +18,6 @@
             {% endif %}
         {% endwith %}
         <div class="row">
-            <div class="col-md">
-                <h3 class="h3">
-                    Nouvelle Formation
-                </h3>
-            </div>
-            <div class="col-md text-center">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <i class="fa fa-circle-plus"></i>
-                    Nouvelle session
-                </button>
-            </div>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Nouvelle session</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                        <form action="{{ url_for('admin_bp.new_session') }}" method="post">
-                            {{ session_form.hidden_tag() }}
-                            <div class="form-group">
-                                {{ session_form.label.label(class="form-control-label") }}
-                                {% if session_form.label.errors %}
-                                    {{ session_form.label.label(class="form-control form-control-md") }}
-                                    {% for error in session_form.label.errors %}
-                                        <div class="alert alert-danger">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    {{ session_form.label(class="form-control form-control-md") }}
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                {{ session_form.start_date.label(class="form-control-label") }}
-                                {% if session_form.start_date.errors %}
-                                    {{ session_form.start_date.label(class="form-control form-control-md") }}
-                                    {% for error in session_form.start_date.errors %}
-                                        <div class="alert alert-danger">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    {{ session_form.start_date(class="form-control form-control-md") }}
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                {{ session_form.end_date.label(class="form-control-label") }}
-                                {% if session_form.end_date.errors %}
-                                    {{ session_form.end_date.label(class="form-control form-control-md") }}
-                                    {% for error in session_form.end_date.errors %}
-                                        <div class="alert alert-danger">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    {{ session_form.end_date(class="form-control form-control-md") }}
-                                {% endif %}
-                            </div>
-                        <br>
-                        <div class="form-group" style="text-align: right;">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                            {{ form.submit(class="btn btn-primary") }}
-                        </div>
-                        </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div class="row">
             <form method="post">
                 {{form.hidden_tag()}}
                 <div class="row mb-4">
@@ -110,11 +32,11 @@
                             {% endfor %}
                         {% else %}
                             {{ form.label(class="form-control form-control-md") }}
-                        {% endif %} 
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row mb-4">
-                        <div class="col-md-6">
+                    <div class="col-md-6">
                         {{ form.limit_number.label(class="form-control-label") }}
                         {% if form.limit_number.errors %}
                             {{ form.limit_number(class="form-control form-control-md") }}
@@ -129,7 +51,7 @@
                     </div>
                 </div>
                 <div class="row mb-4">
-                        <div class="col-md-6">
+                    <div class="col-md-6">
                         {{ form.session.label(class="form-control-label") }}
                         {% if form.session.errors %}
                             {{ form.session(class="form-control form-control-md") }}
@@ -158,7 +80,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="row mb-4">
+                <div class="row">
                     <div class="col-md-6">
                         {{ form.level.label(class="form-control-label") }}
                         {% if form.level.errors %}
@@ -174,7 +96,7 @@
                     </div>
                 </div>
             <br>
-                <div class="row">
+                <div class="row mb-4">
                     <div class="col-md-6">
                         {{ form.on_test.label(class="form-control-label") }}
                         {{ form.on_test() }}
@@ -205,15 +127,22 @@
             </form>
         </div>
     </div>
-
 {% endblock %}
+{% block additional_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/summernote.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css')}}">
+{% endblock %}
+
+{% block actual_title %}
+    Mise à jour de formations
+{% endblock %}
+
 {% block additional_scripts %}
-    <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
     <script src="{{ url_for('static', filename='js/summernote.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-             $('.toast').toast('show');
+            $('.toast').toast('show');
             $('select').select2({});
             $('#description').summernote();
         });
