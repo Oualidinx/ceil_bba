@@ -21,6 +21,9 @@ class Production(Config):
         user = "")
     SQLALCHEMY_DATABASE_URI = "{driver}://{user}:{password}@{host}/{database_name}".format(**credentials)
 
+class Testing(Config):
+    SQLALCHEMY_DATABASE_URI="sqlite:///database.db"
+
 config = {
     "dev": Development,
     'prod':Production,
