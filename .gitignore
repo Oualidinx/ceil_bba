@@ -3,6 +3,7 @@ migrations
 .idea
 instance
 __pycache__
-root/__pycache__
-root/*/__pycache__
+root/__pycache__/
+root/admin/__pycache__/
+root/user/__pycache__/
 
