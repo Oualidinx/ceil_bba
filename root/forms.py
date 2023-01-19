@@ -1,30 +1,29 @@
-from flask_login import current_user
 from flask_wtf import FlaskForm, Form
 from wtforms.validators import DataRequired, ValidationError, EqualTo, Length
-from wtforms import SubmitField, StringField, PasswordField, TextAreaField, BooleanField, RadioField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms import SubmitField, StringField, PasswordField, TextAreaField, BooleanField, RadioField, SelectField
+from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.fields.html5 import DateField, EmailField
 from root.models import User, Language, Session, Course, Category, Level
-from sqlalchemy.sql import and_
 
 import re
 email_regex = re.compile('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
-name_regex = re.compile('^[a-zA-z]+$')
+name_regex = re.compile('^[a-zA-Z]+$')
+price_letters_regex = re.compile('^[a-zA-Z-]')
 phone_number_regex = re.compile('^[\+]?[(]?[0-9]{2}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,7}$')
 
+
+# from root import parsed_data
 
 class LoginForm(FlaskForm):
     email = StringField('Email: ', validators=[DataRequired()])
     password = PasswordField('Mot de passe: ', validators=[DataRequired()])
     submit = SubmitField('Se connecter')
-
     def validate_email(self, email):
         if email_regex.search(email.data) is None:
-            raise ValidationError('Email Invalid')
+            raise ValidationError('Email Invalide')
         user = User.query.filter_by(email=email.data).first()
         if not user:
-            raise ValidationError('Veuillez vérifier les informations fournits')
-
+            raise ValidationError('Veuillez vérifier vos informations')
 
 class UpdateInfoForm(FlaskForm):
     first_name = StringField('Nom: ')
@@ -56,13 +55,15 @@ class RegistrationForm(FlaskForm):
     first_name = StringField('Nom: ', validators=[DataRequired()])
     last_name = StringField('Prénom: ', validators=[DataRequired()])
     birthday = DateField('Date de naissance: ')
+    birth_city = SelectField('Commune de naissance', coerce=int, validate_choice=False)
+    birth_state = SelectField('Lieu de naissance: ', coerce=int, validate_choice=False)
     email = StringField('Email: ', validators=[DataRequired()])
     password = PasswordField('Mot de passe:', validators=[DataRequired()])
     category = QuerySelectField('Catégorie', query_factory=lambda : Category.query.all())
     confirm_password = PasswordField('Confirmer Mot de passe:', validators=[DataRequired(),
                                                                             EqualTo('password',
                                                                             message="Vérifier bien ce champs S.V.P")])
-    submit = SubmitField('Inscrire')
+    submit = SubmitField('Créer le compte')
 
     def validate_first_name(self, first_name):
         if name_regex.search(first_name.data) is None:
@@ -83,7 +84,7 @@ class RegistrationForm(FlaskForm):
 class AddCourseForm(FlaskForm):
     label = StringField('Libellé: ', validators=[DataRequired(message="Champs obligatoire")])
     price = StringField('Prix:')# validators=[DataRequired(message="Champs obligatoire")]
-    session = QuerySelectField('Session: ', query_factory=lambda : Session.query.filter_by(is_active = True).filter_by(is_disabled = False).all())
+    # session = QuerySelectField('Session: ', query_factory=lambda : Session.query.filter_by(is_active = True).filter_by(is_disabled = False).all())
     language = QuerySelectField('Langue: ', query_factory=lambda : Language.query.all())
     level = QuerySelectField('Niveau: ', query_factory=lambda : Level.query.all())
     limit_number = StringField('Nombre Maximum des inscrits:', validators=[DataRequired('Ce champs est obligatoire')])
@@ -106,7 +107,10 @@ class CoursesForm(Form):
 class SubscriptionForm(FlaskForm):
     # courses = FieldList(FormField(CoursesForm), validators=[DataRequired()])
     course = QuerySelectField('Formation:', query_factory=lambda: Course.query.filter_by(is_disabled = False).all())
-    # add = SubmitField('Ajouter Formation')
+    jour = SelectField('Jour', choices = [('Dim','Dimanche'),('Lun', 'Lundi'),('Mar','Mardi'),
+                                          ('Mer','Mercredi'),('Jeu','Jeudi')])  # ,('Ven','Vendredi'),('Sam', 'Samedi')
+    periode = RadioField('Periode:', choices=[('m','Matin'),('s','Soir')])
+    on_test = BooleanField('Je veux Passer un teste de niveau')
     submit = SubmitField('Confirmer le choix')
 
 
@@ -143,12 +147,25 @@ class RequestToken(FlaskForm):
 class CategoryForm(FlaskForm):
     label = StringField('Libellé: ', validators=[DataRequired()])
     price = StringField("Prix par la catégorie: ", validators=[DataRequired("Champs obligatoire")])
+    price_letters = StringField('Prix en chiffre', validators=[DataRequired('Champs obligatoire')])
     submit = SubmitField('Confirmer')
 
     def validate_label(self, label):
         category = Category.query.filter_by(label = label.data).first()
         if category:
             raise ValidationError('Catégorie existe déjà')
+        if name_regex.search(label.data) is None:
+            raise ValidationError('Valeur invalide')
+
+    def validate_price(self, price):
+        if name_regex.search(price.data):
+            raise ValidationError('Valeur invalide!')
+        if float(price.data)<=0:
+            raise ValidationError('Valeur doit être différente de zéro')
+
+    def validate_price_letters(self, price_letters):
+        if price_letters_regex.search(price_letters.data) is None:
+            raise ValidationError('Ce champs ne doit pas contenir aucun chiffre')
 
 
 class EnableSubscription(FlaskForm):
@@ -168,3 +185,16 @@ class EditCategoryForm(FlaskForm):
 
 class EditCourseForm(AddCourseForm):
     submit = SubmitField('Confirmer')
+
+
+class LanguageForm(FlaskForm):
+    label = StringField('Nomination de la langue: ', validators=[DataRequired('Champs obligatoire')])
+    submit = SubmitField('Ajouter')
+
+    def validate_label(self, label):
+        if name_regex.search(label.data) is None:
+            raise ValidationError('Le nom est invalide')
+
+
+class EditLanguageForm(LanguageForm):
+    submit = SubmitField('Mise à jour')

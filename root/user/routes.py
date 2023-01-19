@@ -7,8 +7,18 @@ from root.forms import SubscriptionForm, CoursesForm
 from sqlalchemy.sql import or_, and_
 from flask_weasyprint import HTML, render_pdf
 
+
 @user_bp.before_request
 def user_before_request():
+    _session = Session.query.all()[-1]
+    if _session is not None and _session.is_disabled == False:
+        for course in _session.courses:
+            course_language = CourseLanguage.query.filter_by(fk_course_id=course.id).first()
+            if course_language and (course_language.limit_number - course_language.actual_students_number) <= 0 \
+                    and course.is_disabled == False:
+                course.is_disabled = True
+                database.session.add(course)
+                database.session.commit()
     session['actual_role'] = 'student'
 
 
@@ -23,25 +33,62 @@ def index():
 def inscrire():
     form = SubscriptionForm()
     _session = Session.query.all()[-1]
-    if request.method=="GET" and _session.is_disabled == True:
+    if not _session:
+        flash('Pas de formations/sessions pour le moment','info')
+        return redirect(url_for("user_bp.index"))
+    if _session and request.method=="GET" and _session.is_disabled == True:
         flash("L'inscription n'est pas encore disponible","warning")
-        return render_template('subscribe.html', form=form, _session=_session)
+        # return render_template('subscribe.html', form=form, _session=_session)
+        return redirect(url_for('user_bp.index'))
     if form.validate_on_submit():
         course_language = CourseLanguage.query.filter_by(fk_course_id=form.course.data.id).first()
         if (course_language.limit_number - course_language.actual_students_number)<=0:
             flash('Vous tentez d\'inscrire dans une formation dont elle est complète')
             return redirect(url_for('user_bp.inscrire'))
-        subscription = Subscription()
+        course = Course.query.filter_by(fk_session_id = _session.id).filter_by(id = int(form.course.data.id)).first()
+
+        subscription = Subscription.query.filter_by(fk_student_id = current_user.id) \
+                    .filter(and_(Subscription.fk_course_id == course.id, Subscription.fk_student_id == current_user.id)) \
+                    .first()
+        receipt = PaymentReceipt()
+        receipt.amount = Category.query.get(current_user.fk_category_id).price
+        database.session.add(receipt)
+        database.session.commit()
+        if not subscription:
+            subscription = Subscription()
+            course_language.actual_students_number = course_language.actual_students_number + 1
         subscription.fk_course_id = int(form.course.data.id)
         subscription.fk_student_id = current_user.id
+        # course = Course.query.get(int(form.course.data.id))
+
+        if not form.on_test.data:
+            subscription.is_waiting = False
+            subscription.is_accepted = 1
+            subscription.note = "Félicitations, vous avez été accepté pour continue les démarches d'inscription pour ce cours."
+        else:
+            level = Level.query.get(course_language.fk_level_id)
+            if not level:
+                print("admin_bp.inscrire ligne 54 level not found")
+                abort(404)
+            if level and level.label[0]=='A':
+                flash('Vous ne pouvez pas passer un test de niveau A1 ou A2')
+                return render_template('subscribe.html',form = form, _session = _session)
+            else:
+                subscription.on_test = True
+                subscription.is_waiting = True
+                subscription.note = "Veuillez contacter l'administration du centre afin de fixer une date pour le teste de niveau afin de suivre ce cours"
+
+
+        subscription.fk_payment_receipt_id = receipt.id
+        subscription.course_day = form.jour.data
+        subscription.course_periode = "Matin" if form.periode.data =="m" else "Soir"
         database.session.add(subscription)
         database.session.commit()
-        course_language.actual_students_number = course_language.actual_students_number+1
         database.session.add(course_language)
         database.session.commit()
         flash('Votre choix a été confirmer. Merci','success')
         flash('Veuillez imprimer le reçu de paiement à payer au niveau du centre. Merci', 'info')
-        return redirect(url_for('user_bp.inscrire'))
+        return redirect(url_for('user_bp.print_receipt', receipt_id = receipt.id))
     return render_template('subscribe.html',form = form, _session = _session)
 
 #""""""""""""""""""""
@@ -55,18 +102,26 @@ def subscriptions():
         {
             'id':course.id,
             'label':course.label,
-            'is_disabled':Subscription.query.filter(and_(Subscription.fk_course_id == course.id,
-                                                         Subscription.fk_student_id == current_user.id)).first.is_waiting
+            'status':Subscription.query.filter(and_(Subscription.fk_course_id == course.id,
+                                                         Subscription.fk_student_id == current_user.id)).first().repr()['status'],
+            'note':Subscription.query.filter(and_(Subscription.fk_course_id == course.id,
+                                                         Subscription.fk_student_id == current_user.id)).first().note,
+            'payment_receipt':Subscription.query.filter(and_(Subscription.fk_course_id == course.id,
+                                                         Subscription.fk_student_id == current_user.id)).first().fk_payment_receipt_id
         } for course in courses
     ]
     return render_template('subscriptions.html', courses=student_subs)
 
 
 @user_bp.route('/subscription/<int:receipt_id>/print', methods=['GET','POST'])
-# @login_required
+@login_required
 def print_receipt(receipt_id):
-    subscription = Subscription.query.get_or_404(receipt_id)
-    student = User.query.get_or_404(subscription.fk_student_id)
+    subscription = Subscription.query.filter_by(fk_payment_receipt_id = receipt_id).first()
+    if not subscription:
+        abort(404)
+    student = User.query.get(subscription.fk_student_id)
+    if not student:
+        abort(404)
     if student.role!='student':
         abort(403)
     cost = Category.query.get_or_404(student.fk_category_id)

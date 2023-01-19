@@ -8,16 +8,25 @@
     </style>
 {% endblock %}
 {% block main_tag %}
-    {% with messages = get_flashed_messages(with_categories = true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert  alert-{{ category }}">
-                     {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <div class="row">
+    <div class="row mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category , message in messages %}
+                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                        <div class="toast align-items-center text-white bg-{{ category }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    {{ message }}
+                                </div>
+                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                          </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="row mt-4">
         <div class="col-lg">
             <div class="card justify-content-center">
                 <div class="card-header">
@@ -35,23 +44,7 @@
                         <tr>
                             <td style="font-weight: bold;">Date fin: </td><td> {{ _session.end_date }}</td>
                         </tr>
-                        <tr>
-                            <td style="font-weight: bold;">
-                                Les formations:
-                            </td>
-                            <td>
-                                {% if _session.courses %}
 
-                                        <ol>
-                                            {% for cours in _session.courses %}
-                                                <li>{{ cours.label }}</li>
-                                            {% endfor %}
-                                        </ol>
-                                {% else %}
-                                    Aucune formation
-                                {% endif %}
-                            </td>
-                        </tr>
                         <form method="post">
                             {{ form.hidden_tag() }}
                             <tr>
@@ -86,4 +79,11 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block additional_scripts %}
+    <script !src="">
+        $(document).ready(function(){
+            $('.toast').toast('show');
+        });
+    </script>
 {% endblock %}

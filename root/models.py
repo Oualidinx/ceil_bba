@@ -16,7 +16,6 @@ class DateTimeEncoder(json.JSONEncoder):
         else:
             return super().default(z)
 
-
 class Course(db.Model):
     __tablename__="course"
     id = db.Column(db.Integer, primary_key = True)
@@ -25,7 +24,6 @@ class Course(db.Model):
     is_disabled = db.Column(db.Boolean, default = False)
     fk_session_id=db.Column(db.Integer, db.ForeignKey('session.id'))
     description = db.Column(db.String(2500))
-    on_test = db.Column(db.Boolean, default=False)
     students = db.relationship('User', secondary="subscription",
                                primaryjoin = "Course.id == foreign(Subscription.fk_course_id)",
                                secondaryjoin="User.id == foreign(Subscription.fk_student_id)",
@@ -92,6 +90,7 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     birthday = db.Column(db.Date)
+    birthplace = db.Column(db.String(100))
     role = db.Column(db.String(10))
     fk_category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     is_deleted = db.Column(db.SmallInteger, default=0)
@@ -115,13 +114,13 @@ class User(UserMixin, db.Model):
         return dict(
             first_name = self.first_name,
             last_name = self.last_name,
-            email = self.email,
-            birthday = self.birthday.date()
+            email = self.email
+            # birthday = self.birthday.date()
         )
 
-    def details_courses(self):
+    def detail_course(self):
         if self.courses:
-            return [[(self.id,self.first_name, self.last_name, self.email,self.birthday.date(),obj.label)] for obj in self.courses]
+            return [(self.id,self.first_name, self.last_name, self.email,obj.label) for obj in self.courses]
 
     def get_token(self, expires_in=600):
         return jwt.encode(
@@ -156,12 +155,18 @@ class Language(db.Model):
     __tablename__="language"
     id = db.Column(db.Integer, primary_key = True)
     label = db.Column(db.String(100))
-    levels = db.relationship('Level', secondary = "language_level",
-                             primaryjoin="Language.id == foreign(LanguageLevel.fk_language_id)",
-                             secondaryjoin="Level.id==foreign(LanguageLevel.fk_level_id)",
-                             viewonly=True)
+    # levels = db.relationship('Level', secondary = "language_level",
+    #                          primaryjoin="Language.id == foreign(LanguageLevel.fk_language_id)",
+    #                          secondaryjoin="Level.id==foreign(LanguageLevel.fk_level_id)",
+    #                          viewonly=True)
     def __repr__(self):
         return f'{self.label}'
+
+    def to_dict(self):
+        return dict(
+            id = self.id,
+            label = self.label
+        )
 
 
 class Subscription(db.Model):
@@ -169,10 +174,15 @@ class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     fk_student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     fk_course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+    fk_payment_receipt_id = db.Column(db.Integer, db.ForeignKey('payment_receipt.id'))
     is_waiting = db.Column(db.Boolean, default = True)
     is_accepted = db.Column(db.Integer, default = -1)
+    on_test = db.Column(db.Boolean, default=False)
     subscription_date = db.Column(db.DateTime, default = datetime.utcnow())
     charges_paid = db.Column(db.Boolean, default = False)
+    course_day = db.Column(db.String(15))
+    course_periode = db.Column(db.String(10))
+    note = db.Column(db.String(1500))
 
     def to_dict(self):
         return dict(
@@ -183,16 +193,24 @@ class Subscription(db.Model):
             session = Session.query.get(Course.query.get(self.fk_course_id).fk_session_id)
         )
 
-    def __repr__(self):
-        return dict(
+    def repr(self, columns = None):
+        all_details = dict(
             id=self.fk_student_id,
             first_name=User.query.get(self.fk_student_id).first_name,
             last_name=User.query.get(self.fk_student_id).last_name,
+            birthday = User.query.get(self.fk_student_id).birthday.date() if User.query.get(self.fk_student_id).birthday else None,
+            birthplace = User.query.get(self.fk_student_id).birthplace,
             email=User.query.get(self.fk_student_id).email,
-            birthday=User.query.get(self.fk_student_id).birthday.date(),
-            course={'label': Course.query.get(self.fk_course_id).label, 'id':self.fk_course_id},
-            status = self.is_accepted
+            course_label = Course.query.get(self.fk_course_id).label,
+            course_id=self.fk_course_id,
+            course_day=self.course_day,
+            course_periode = self.course_periode,
+            status = 1 if (self.is_accepted == 1 or not self.on_test) else -1 if (self.is_waiting and self.is_accepted == -1)  else 0,
+            note = self.note
         )
+        if columns:
+            return (all_details[k] for k in columns)
+        return all_details
 
 class Note(db.Model):
     __tablename__="note"
@@ -203,11 +221,11 @@ class Note(db.Model):
     mark = db.Column(db.Float, default = 0)
 
 
-class LanguageLevel(db.Model):
-    __tablename__="language_level"
-    id = db.Column(db.Integer, primary_key=True)
-    fk_level_id = db.Column(db.Integer, db.ForeignKey('level.id'))
-    fk_language_id = db.Column(db.Integer, db.ForeignKey('language.id'))
+# class LanguageLevel(db.Model):
+#     __tablename__="language_level"
+#     id = db.Column(db.Integer, primary_key=True)
+#     fk_level_id = db.Column(db.Integer, db.ForeignKey('level.id'))
+#     fk_language_id = db.Column(db.Integer, db.ForeignKey('language.id'))
 
 
 class CourseLanguage(db.Model):
@@ -224,3 +242,8 @@ class CourseLanguage(db.Model):
 def user_loader(user_id):
     return User.query.get(user_id)
 
+class PaymentReceipt(db.Model):
+    __tablename__="payment_receipt"
+    id = db.Column(db.Integer, primary_key = True)
+    payment_date = db.Column(db.DateTime, default = datetime.utcnow())
+    amount = db.Column(db.Float, default = 0)

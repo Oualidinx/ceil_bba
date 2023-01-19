@@ -6,6 +6,9 @@
 {% block additional_scripts %}
     <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
     <script>
+        $(document).ready(function (){
+            $('.toast').toast('show');
+        })
           new gridjs.Grid({
             columns: [
                 { id: 'date', name: 'Date d\'inscription' },
@@ -18,15 +21,15 @@
                 {
                     id: '{{ subscription["date"] }}',
                     label: '{{ subscription["course"] }}',
-                    status: '{% if course["is_waiting"] == True%} <span style="text-color:black; background-color:#E06000;">En attente</span> \
-                             {%elif status["is_accepted"] == 1%} <span style="text-color:white; background-color:#004D33;">admis</span> \
-                             {% elif subscription["is_accepted"] == -1 %} <span style="text-color:white; background-color:#A6001A;">non admis</span> {% endif %}',
-                    session:'{{ course["session"] }}'
+                    status: gridjs.html(`{% if subscription["is_waiting"] == True%} <span class="badge rounded-pill" style="background-color:#E06000;">En attente</span> \
+                             {%elif subscription["is_accepted"] == 1%} <span class="badge rounded-pill" style="background-color:#004D33;">admis</span> \
+                             {% elif subscription["is_accepted"] == -1 %} <span class="badge rounded-pill" style="background-color:#A6001A;">non admis</span> {% endif %}`),
+                    session:'{{ subscription["session"] }}'
                 },
               {% endfor %}
             ],
             search: {
-              selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
+              selector: (cell, rowIndex, cellIndex) => [0, 1, 2, 3].includes(cellIndex) ? cell : null,
             },
             sort: true,
             pagination: true
@@ -36,7 +39,25 @@
 {% endblock %}
 
 {% block main_tag %}
-    <div class="row">
+    <div class="row mb-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category , message in messages %}
+                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                        <div class="toast align-items-center text-white bg-{{ category }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    {{ message }}
+                                </div>
+                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                          </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="row mb-4">
         <div class="col-lg">
             <div class="card">
                 <div class="card-header">
@@ -50,9 +71,9 @@
                         <tr>
                             <td style="font-weight: bold;">Prénom: </td> <td> {{ student['last_name'] }}</td>
                         </tr>
-                        <tr>
-                            <td style="font-weight: bold;">Date naissance: </td><td> {{ student['birthday'] }}</td>
-                        </tr>
+{#                        <tr>#}
+{#                            <td style="font-weight: bold;">Date naissance: </td><td> {{ student['birthday'] }}</td>#}
+{#                        </tr>#}
                         <tr>
                             <td style="font-weight: bold;">Adresse électronique: </td><td> {{ student['email'] }}</td>
                         </tr>

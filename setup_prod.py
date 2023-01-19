@@ -69,14 +69,6 @@ with app.app_context():
     database.session.add(level)
     database.session.commit()
 
-    langue = Language(label="Français")
-    database.session.add(langue)
-    database.session.commit()
-
     langue = Language(label="Anglais")
-    database.session.add(langue)
-    database.session.commit()
-
-    langue = Language(label="Espagnole")
     database.session.add(langue)
     database.session.commit()

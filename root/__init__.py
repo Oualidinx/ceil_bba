@@ -1,12 +1,10 @@
-import os
 
 from flask_sqlalchemy import SQLAlchemy
-
+import os
 from flask import Flask
 from flask_login import LoginManager
 from flask_mail import Mail
 from config import config
-
 app = Flask(__name__)
 
 database = SQLAlchemy()

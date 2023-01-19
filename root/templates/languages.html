@@ -33,21 +33,16 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header card-header-primary">
-                      <h4 class="card-title ">Les catégories</h4>
-
+                        <h4 class="card-title ">Les langues</h4>
                     </div>
                     <div class="card-body">
                         <div class="btn-group hstack gap-3">
                             <div class="border ms-auto">
-                                <a class="btn btn-md btn-primary" href="{{ url_for('admin_bp.new_category') }}">Nouveau</a>
+                                <a class="btn btn-md btn-primary" href="{{ url_for('admin_bp.add_language') }}">Nouveau</a>
                             </div>
-                        </div>
 
-                        {% if liste %}
-                            <div id="table"></div>
-                        {% else %}
-                            <h3 class="h3"> Pas encore de catégories</h3>
-                        {% endif %}
+                        </div>
+                        <div id="table"></div>
                     </div>
                 </div>
             </div>
@@ -85,39 +80,39 @@
                 error: 'Erreur pendant le chargement des données'},
             columns: [
                   { id: 'id', name: 'Indexe' },
-                  { id: 'label', name: 'Titre' }
+                  { id: 'label', name: 'Titre' },
+                  { id: 'actions', name: 'Actions' }
             ],
             data: ()=>{
                 return new Promise(resolve => {
                     setTimeout(()=>
                         resolve(
-                            [
-                                {% if liste %}
-                                    {% for category in liste %}
-                                        {
-                                              id: '{{ category["id"] }}',
-                                              label :'{{ category["label"] }}',
-                                              price :'{{ '{:20,.2f}'.format(category["price"] ) }}',
-                                              actions: gridjs.html (
-                                        `<div class="dropdown dropstart">
-                                              <a class="btn btn-secondary btn-sm" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                                              </a>
+                                [
+                                    {% if liste %}
+                                        {% for langue in liste %}
+                                            {
+                                                  id: '{{ langue["id"] }}',
+                                                  label :'{{ langue["label"] }}',
+                                                actions: gridjs.html (
+                                                `<div class="dropdown dropstart">
+                                                      <a class="btn btn-secondary btn-sm" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                      </a>
 
-                                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <li><a class="dropdown-item" href="{{ url_for('admin_bp.edit_category',category_id = category['id']) }}">Mise à jour</a></li>
-                                              </ul>
-                                        </div>`)
-                                        },
-                                    {% endfor %}
-                                {% endif %}
+                                                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li><a class="dropdown-item" href="{{ url_for('admin_bp.edit_language',language_id = langue['id']) }}">Mise à jour</a></li>
+                                                      </ul>
+                                                </div>`)
+                                                    },
+                                        {% endfor %}
+                                    {% endif %}
                             ]
                         ),2000
                     );
-                })
+                });
             },
             search: {
-              selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
+              selector: (cell, rowIndex, cellIndex) => [0, 1].includes(cellIndex) ? cell : null,
             },
             sort: true,
             pagination: true

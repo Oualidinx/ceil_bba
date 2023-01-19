@@ -13,8 +13,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -32,11 +32,11 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -54,28 +54,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "//wsl$/Ubuntu/home/oualidinx/coding_projects/CEIL_BBA/instance/database.db",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/oualidinx/coding_projects/CEIL_BBA/.env&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "java.sql.Driver",
-      "postgresql",
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;java.sql.Driver&quot;,
+      &quot;postgresql&quot;,
+      &quot;sqlite&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\css" />
@@ -85,12 +85,41 @@
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\admin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA" />
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\uploads" />
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\authentication" />
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root" />
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\webfonts" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\js" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\css" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\dist\theme" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="CEIL_BBA" type="Python.FlaskServer">
+      <option name="application" value="flask run" />
+      <option name="flaskEnv" />
+      <module name="CEIL_BBA" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="/home/oualidinx/coding_projects/CEIL_BBA/venv/bin/python3" />
+      <option name="SDK_NAME" value="Python 3.8.10 WSL (Ubuntu): (/home/oualidinx/coding_projects/CEIL_BBA/venv/bin/python3)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="true" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+          <ENTRY IS_ENABLED="true" PARSER="env" IS_EXECUTABLE="false" PATH=".env" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -121,7 +150,17 @@
       <workItem from="1671462228837" duration="283000" />
       <workItem from="1671462524198" duration="8135000" />
       <workItem from="1671896555932" duration="16297000" />
-      <workItem from="1671971385507" duration="29325000" />
+      <workItem from="1671971385507" duration="41875000" />
+      <workItem from="1672127803718" duration="20490000" />
+      <workItem from="1672235085415" duration="5695000" />
+      <workItem from="1672327799180" duration="306000" />
+      <workItem from="1673284192143" duration="11863000" />
+      <workItem from="1673971028643" duration="3758000" />
+      <workItem from="1673994711631" duration="4921000" />
+      <workItem from="1673999794260" duration="593000" />
+      <workItem from="1674000425594" duration="4917000" />
+      <workItem from="1674035418826" duration="9695000" />
+      <workItem from="1674142565627" duration="3887000" />
     </task>
     <servers />
   </component>
@@ -145,5 +184,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CEIL_BBA$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1668701992193" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/CEIL_BBA$Flask__gunicorn_run_app_.coverage" NAME="Flask (gunicorn run:app) Coverage Results" MODIFIED="1669663519044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/CEIL_BBA$CEIL_BBA.coverage" NAME="CEIL_BBA Coverage Results" MODIFIED="1674037430594" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/CEIL_BBA$Flask__app_py_flask_run_.coverage" NAME="CEIL_BBA Coverage Results" MODIFIED="1674000167621" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

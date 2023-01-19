@@ -1,4 +1,9 @@
 {% extends "admin_layout.html" %}
+{% block actual_title %}
+    <div class="mb-4">
+        Nouvelle langue
+    </div>
+{% endblock %}
 {% block main_tag %}
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -25,7 +30,6 @@
                         <div class="col-md-6">
                             {{ form.label.label(class="form-control-label") }}
                             <div class="input-group has-validation">
-
                                 {% if form.label.errors %}
                                     {{ form.label(class="form-control form-control-md is-invalid") }}
                                     {% for error in form.label.errors %}
@@ -35,44 +39,6 @@
                                     {% endfor %}
                                 {% else %}
                                     {{ form.label(class="form-control form-control-md") }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-4">
-                        <div class="col-md-6">
-                            {{ form.price.label(class="form-control-label") }}
-                            <div class="input-group has-validation">
-                                {% if form.price.errors %}
-                                    {{ form.price(class="form-control form-control-md is-invalid") }}
-                                    {% for error in form.price.errors %}
-                                        <div class="invalid-feedback">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    {{ form.price(class="form-control form-control-md") }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-4">
-                        <div class="col-md-6">
-                            {{ form.price_letters.label(class="form-control-label") }}
-                            <div class="input-group has-validation">
-                                {% if form.price_letters.errors %}
-                                    {{ form.price_letters(class="form-control form-control-md is-invalid") }}
-                                    {% for error in form.price_letters.errors %}
-                                        <div class="invalid-feedback">
-                                            {{ error }}
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    {{ form.price_letters(class="form-control form-control-md") }}
                                 {% endif %}
                             </div>
                         </div>
@@ -92,7 +58,7 @@
 {% endblock %}
 
 {% block additional_scripts %}
-    <script !src="">
+    <script>
         $(document).ready(function (){
             $('.toast').toast('show');
         });

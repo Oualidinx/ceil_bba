@@ -11,6 +11,7 @@
                 </div>
                 <div class="card-body">
                     <div id="table"></div>
+{#                    <span style="color: #004D33; font-weight: bold;">azeazeazeaeaze</span>#}
                 </div>
             </div>
         </div>
@@ -20,22 +21,63 @@
     <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
     <script>
           new gridjs.Grid({
+              language:{
+                search: {
+                  placeholder: 'Recherche...',
+                },
+                sort: {
+                  sortAsc: 'Ordre croissant',
+                  sortDesc: 'Ordre décroissant',
+                },
+                pagination: {
+                  previous: 'Précédent',
+                  next: 'Suivant',
+                  navigate: (page, pages) => `Page ${page} of ${pages}`,
+                  page: (page) => `Page ${page}`,
+                  showing: 'Affichage...',
+                  of: 'de',
+                  to: 'à',
+                  results: 'résultats',
+                },
+                loading: 'Chargement...',
+                noRecordsFound: 'Ancun enregistrements',
+                error: 'Erreur pendant le chargement des données'},
             columns: [
               { id: 'id', name: '#' },
               { id: 'label', name: 'Titre' },
-              { id: 'is_disabled', name: 'Status' }
+              { id: 'status', name: 'Status' },
+                {id:"note", name: "Remarque"},
+                {id:'actions',name:'Actions'}
             ],
-            data: [
-              {% for course in courses %}
-                {
-                  id: '{{ course["id"] }}',
-                  label: '{{ course["label"] }}',
-                  is_disabled: '{% if course["is_disabled"] == True%} <h5 style="text-color:#E06000;">En attente</h5> {%else%} <h5 style="text-color:#004D33;">acceptée</h5> {% endif %}'
-                },
-              {% endfor %}
-            ],
+            data: () => { return new Promise(resolve => {
+
+                setTimeout(()=>
+                    resolve([
+                      {% for course in courses %}
+                        {
+                          id: '{{ course["id"] }}',
+                          label: '{{ course["label"] }}',
+                          status:  gridjs.html(`{% if course["status"] == -1%} <span class="badge rounded-pill" style="text-color:black; background-color:#E06000;">En attente</span> \
+                                                {%elif course["status"] == 1%} <span class="badge rounded-pill" style="text-color:white; background-color:#004D33;">admis</span> \
+                                                {%else%} <span class="badge rounded-pill" style="text-color:white; background-color:#A6001A;">non admis</span> \
+                                                {% endif %}`),
+                            note:gridjs.html(`{% if course['note'] %}
+                                                    <span class="badge rounded-pill"
+                                                      style="{% if course['status'] == 1 %}background-color: #004D33
+                                                             {% else %}background-color:#A6001A;"
+                                                             {% endif %}; font-weight: bold;">{{ course['note'] }}</span>
+                                              {% endif %}`),
+                          actions: gridjs.html(`
+                            <a role="btn" class="btn btn-sm btn-secondary" href="{{ url_for('user_bp.print_receipt',
+                                            receipt_id=course['payment_receipt'])}}">Imprimer le Reçu de paiement</a>
+                          `)
+                        },
+                      {% endfor %}
+                    ])
+                ,2000);
+            })},
             search: {
-              selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
+              selector: (cell, rowIndex, cellIndex) => [0, 1, 2, 3].includes(cellIndex) ? cell : null,
             },
             sort: true,
             pagination: true

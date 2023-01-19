@@ -3,37 +3,54 @@
            <title>Reçu de paiement</title>
 
            <style>
+               @font-face {
+                  font-family: Roboto;
+                  src: url("{{ url_for('static', filename='webfonts/Roboto-Regular.ttf') }}");
+                }
                 @page {
                     size: A5 landscape;
-                    margin: 1.5mm;
+                    margin: 1cm;
+
                 }
+               body{
+                   font-family: Roboto, serif;
+               }
            </style>
       </head>
       <body>
       <table>
           <tr>
-            <td>Université Mohamed El Bachir El Ibrahimi</td>
-            <td style="text-align: right">Année Scolaire: {{ _session.label }}</td>
+              <td rowspan="3" style="width: 1%;"><img style="width: 120px; height: 100px;" src="{{ url_for('static', filename='uploads/cropped-LOGO-CEIL.png') }}" alt=""></td>
+              <td  style="width: 20%;">Université Mohamed El Bachir El Ibrahimi</td>
+              <td style="text-align: right; width: 10%;">Année Scolaire: {{ _session.label }}</td>
           </tr>
           <tr>
-            <td><b>C</b>entre d'<b>E</b>nseignement <b>I</b>ntensive de <b>L</b>angues</td>
-            <td style="text-align: right">Date: {{ date }}</td>
+              <td rowspan="2"><b>C</b>entre d'<b>E</b>nseignement <b>I</b>ntensive de <b>L</b>angues</td>
+              <td style="text-align: right;">Date: {{ date.date() }}</td>
           </tr>
           <tr>
-            <td></td>
-            <td style="text-align: right">N°: {{ number }}</td>
+            <td style="text-align: right;">N°: {{ number }}</td>
           </tr>
-          <tr style="text-align: center">
-            <td><h2>Reçu de Paiement</h2></td>
-          </tr>
-          <tr>
-              <td>Nom et prénom: </td> <td  style="font-style: oblique;">{{ student.first_name }} {{ student.last_name }}</td>
+      </table>
+      <table>
+          <tr style="margin-bottom: 4px; text-align: center; width: 100%;">
+              <td><h2>Reçu de Paiement</h2></td>
           </tr>
           <tr>
-              <td>La somme en chiffres: </td> <td  style="font-style: oblique;">{{ '{:20,.2f}'.format(cost) }}</td>
+              <td>Nom et prénom: <span style="color: white">...........................</span> {{ student.first_name }} {{ student.last_name }}</td>
           </tr>
-          <tr><td>La somme en lettres: </td></tr>
-          <tr><td style="font-style: oblique;"> {{ cost_letters }} </td></tr>
+          <tr><td><br></td></tr>
+          <tr>
+              <td>La somme en chiffres:  <span style="color: white">...........................</span> {{ '{:20,.2f}'.format(cost) }} DA</td><td></td>
+          </tr>
+          <tr><td><br></td></tr>
+          <tr><td>La somme en lettres:  <span style="color: white">.........................</span> {{ cost_letters }} </td></tr>
+          <tr><td><br></td></tr>
+          <tr style="text-align: right; width: 100%;"><td><span style="color: white">.........................</span>Cachet et signature de caissier</td></tr>
+          <tr><td><br></td></tr>
+          <tr><td><br></td></tr>
+          <tr><td><br></td></tr>
+          <tr><td><br></td></tr>
           <tr>
               <td>Note: Le propriétaire de ce reçu devera l'imprimer pour être validé par la direction du centre et le joindre au dossier d'inscription</td>
           </tr>

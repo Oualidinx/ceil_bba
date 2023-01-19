@@ -128,21 +128,21 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="row mb-4">
-                        <div class="col-md-6">
-                        {{ form.session.label(class="form-control-label") }}
-                        {% if form.session.errors %}
-                            {{ form.session(class="form-control form-control-md") }}
-                            {% for error in form.session.errors %}
-                                <div class="alert alert-danger">
-                                    {{ error }}
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            {{ form.session(class="form-control form-control-md") }}
-                        {% endif %}
-                    </div>
-                </div>
+{#                <div class="row mb-4">#}
+{#                        <div class="col-md-6">#}
+{#                        {{ form.session.label(class="form-control-label") }}#}
+{#                        {% if form.session.errors %}#}
+{#                            {{ form.session(class="form-control form-control-md") }}#}
+{#                            {% for error in form.session.errors %}#}
+{#                                <div class="alert alert-danger">#}
+{#                                    {{ error }}#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+{#                        {% else %}#}
+{#                            {{ form.session(class="form-control form-control-md") }}#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="row mb-4">
                     <div class="col-md-6">
                         {{ form.language.label(class="form-control-label") }}
@@ -174,13 +174,13 @@
                     </div>
                 </div>
             <br>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form.on_test.label(class="form-control-label") }}
-                        {{ form.on_test() }}
-                    </div>
-                </div>
-            <br>
+{#                <div class="row">#}
+{#                    <div class="col-md-6">#}
+{#                        {{ form.on_test.label(class="form-control-label") }}#}
+{#                        {{ form.on_test() }}#}
+{#                    </div>#}
+{#                </div>#}
+{#            <br>#}
                 <div class="row mb-4">
                     <div class="col-md-6">
                         {{ form.description.label(class="form-control-label") }}

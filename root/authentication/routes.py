@@ -1,6 +1,4 @@
-import os
-
-from flask import url_for, redirect, request, render_template, flash, session,current_app
+from flask import url_for, redirect, request, render_template, flash, session,current_app, jsonify
 from root.authentication import auth_bp
 from root.models import User
 from flask_login import login_required, login_user, logout_user, current_user
@@ -10,7 +8,7 @@ from root import database
 from flask_mail import Message
 
 from root import mail
-from dotenv import load_dotenv
+import json, os
 
 @auth_bp.before_request
 def define():
@@ -44,10 +42,10 @@ def login():
                 return redirect(url_for('user_bp.index'))
             else:
                 flash('Veuillez vérifier les informations', 'danger')
-                return redirect(url_for('auth_bp.login'))
+
         else:
             flash('veuillez verifier les informations', 'danger')
-            return redirect(url_for('auth_bp.login'))
+            # return redirect(url_for('auth_bp.login'))
     return render_template('login.html', form=form)
 
 
@@ -55,6 +53,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.clear()
     return redirect(url_for('auth_bp.login'))
 
 
@@ -62,11 +61,24 @@ def logout():
 @auth_bp.post('/register')
 def register():
     form = RegistrationForm()
+    os.chdir('root')
+    os.chdir('static')
+    os.chdir('uploads')
+    file = open('../../static/uploads/algeria_postcodes.json','r')
+    data = json.load(file)
+    states = [(int(x['wilaya_code']), x['wilaya_name']) for x in data]
+    states = list(dict.fromkeys(states))
+    os.chdir('..')
+    os.chdir('..')
+    os.chdir('..')
+    form.birth_state.choices = states
     if form.validate_on_submit():
         user = User()
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.birthday = form.birthday.data
+        # user.birthplace = f'{form.birth_city.data}, {form.birth_state.data}'
+        user.birthplace = form.birth_state.data
         user.role = "student"
         user.fk_category_id = int(form.category.data.id)
         user.email = form.email.data
@@ -76,6 +88,24 @@ def register():
         flash('Votre inscription a terminé avec succès.\nVous pouvez vous connecter afin de procèder votre inscription à une formation',"success")
         return redirect(url_for('auth_bp.login'))
     return render_template('registration.html', form = form)
+
+# @auth_bp.get('/cities')
+# @auth_bp.post('/cities')
+# def get_cities():
+#     os.chdir('root')
+#     os.chdir('static')
+#     os.chdir('uploads')
+#     file = open('../../static/uploads/algeria_postcodes.json', 'r')
+#     data = json.load(file)
+#     states = [(x['commune_name'], x['commune_name']) for x in data if x['wilaya_code'] == str(request.json['state'])]
+#     states = list(dict.fromkeys(states))
+#     states = [{'id': x[0], 'text': x[1]} for x in states]
+#     os.chdir('..')
+#     os.chdir('..')
+#     os.chdir('..')
+#     print(states)
+#     response = jsonify(message=states),200
+#     return response
 
 
 @auth_bp.get('/request_token')
@@ -105,6 +135,4 @@ def reset_password(token):
         database.session.commit()
         flash('Votre mot de passe a été changé avec succès', 'success')
         return redirect(url_for('auth_bp.login'))
-    else:
-        print(form.errors)
     return render_template("reset_password.html", form=form)

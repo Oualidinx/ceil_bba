@@ -26,7 +26,7 @@
                     <div class="card-header card-header-primary">
                         <div class="row">
                             <div class="col-md">
-                                <h4 class="card-title ">Les Etudiants Inscris dans la formation {% if formation %}
+                                <h4 class="card-title ">Les Etudiants Inscris {% if formation %}* dans la formation
                                     {{ formation.label }}
                                 {% endif %} </h4>
                             </div>
@@ -36,8 +36,6 @@
                                                                         {% else %} {{ url_for('admin_bp.all_students_csv') }}
                                                                         {% endif %}">Exporter la liste</a>
                             </div>
-
-
                         </div>
                     </div>
                     <div class="card-body">
@@ -55,16 +53,42 @@
             $('.toast').toast('show');
         })
         new gridjs.Grid({
+            language:{
+                search: {
+                  placeholder: 'Recherche...',
+                },
+                sort: {
+                  sortAsc: 'Ordre croissant',
+                  sortDesc: 'Ordre décroissant',
+                },
+                pagination: {
+                  previous: 'Précédent',
+                  next: 'Suivant',
+                  navigate: (page, pages) => `Page ${page} of ${pages}`,
+                  page: (page) => `Page ${page}`,
+                  showing: 'Affichage..',
+                  of: 'de',
+                  to: 'à',
+                  results: 'résultats',
+                },
+                loading: 'Chargement...',
+                noRecordsFound: 'Ancun enregistrements',
+                error: 'Erreur pendant le chargement des données'},
             columns: [
-                { id: 'id', name: 'Numéro' },
+                { id: 'id', name: 'Num' },
                 { id: 'first_name', name: 'Nom' },
                 { id: 'last_name', name: 'Prénom' },
                 { id: 'email', name: 'Email' },
-                { id:'course', name:"La formation demandée"},
+                { id:'course', name:"La formation"},
+                {id:"course_day", name:"Jour"},
+                {id:"course_periode", name:"Période"},
                 { id: 'status', name: 'Status'},
                 { id:'actions', name:'Actions'}
             ],
-            data: [
+            data: ()=>{
+                return new Promise(resolve => {
+                    setTimeout(()=>
+                        resolve([
                 {% if students %}
                     {% for student in students %}
                         {
@@ -72,10 +96,12 @@
                               first_name :'{{ student["first_name"] }}',
                               last_name :'{{ student["last_name"] }}',
                               email :'{{ student["email"] }}',
-                              course:'{{ student['course']['label'] }}',
-                              status:  gridjs.html(`{% if student["status"] == -1%} <span style="text-color:black; background-color:#E06000;">En attente</span> \
-                                        {%elif student["status"] == 1%} <span style="text-color:white; background-color:#004D33;">admis</span> \
-                                        {%else%} <span style="text-color:white; background-color:#A6001A;">non admis</span> \
+                              course_label:'{{ student['course_label'] }}',
+                              course_day:'{{ student['course_day'] }}',
+                              course_periode:'{{ student['course_periode'] }}',
+                              status:  gridjs.html(`{% if student["status"] == -1%} <span class="badge rounded-pill" style="text-color:black; background-color:#E06000;">En attente</span> \
+                                        {%elif student["status"] == 1%} <span class="badge rounded-pill" style="text-color:white; background-color:#004D33;">admis</span> \
+                                        {%else%} <span class="badge rounded-pill" style="text-color:white; background-color:#A6001A;">non admis</span> \
                                         {% endif %}`),
                               actions: gridjs.html(`<div class="dropdown dropstart">
                                   <a class="btn btn-secondary btn-sm" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -83,8 +109,8 @@
                                   </a>
                                   <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     <li><a class="dropdown-item" href="{{ url_for('admin_bp.get_student',student_id=student['id']) }}">Profile etudiant</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('admin_bp.accept',course_id=student['course']['id'],student_id=student['id']) }}">Avis d'inscription favorable</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('admin_bp.denies',course_id=student['course']['id'],student_id=student['id']) }}">
+                                    <li><a class="dropdown-item" href="{{ url_for('admin_bp.accept',course_id=student['course_id'],student_id=student['id']) }}">Avis d'inscription favorable</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('admin_bp.denies',course_id=student['course_id'],student_id=student['id']) }}">
                                         Avis d'inscription défavorable</a></li>
                                   </ul>
                             </div>`
@@ -92,7 +118,10 @@
                         },
                     {% endfor %}
                 {% endif %}
-            ],
+            ]),2000
+                    )
+                })
+            },
             search: {
               selector: (cell, rowIndex, cellIndex) => [0, 1, 4].includes(cellIndex) ? cell : null,
             },
