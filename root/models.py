@@ -94,6 +94,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(10))
     fk_category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     is_deleted = db.Column(db.SmallInteger, default=0)
+    is_verified = db.Column(db.Boolean, default = False)
     email = db.Column(db.String(100), nullable = False)
     phone_number = db.Column(db.String(10))
     password_hash = db.Column(db.String(256), nullable=False)
@@ -122,7 +123,7 @@ class User(UserMixin, db.Model):
         if self.courses:
             return [(self.id,self.first_name, self.last_name, self.email,obj.label) for obj in self.courses]
 
-    def get_token(self, expires_in=600):
+    def get_token(self, expires_in=90):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS512')
@@ -130,10 +131,14 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_reset_token(token):
         try:
-            _id = jwt.decode(token, app.config['SECRET_KEY'],
-                            algorithms=['HS512'])['reset_password']
+            token = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS512'])
+            _id = token['reset_password']
+            expires = time() - token['exp']
+            if expires > 0:
+                return None
         except:
-            return
+            return None
         return User.query.get(_id)
 
 

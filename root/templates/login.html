@@ -17,7 +17,7 @@
                                 <div class="card-header"><h3 class="text-center font-weight-light my-4">Se connecter</h3></div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <img src="{{ url_for('static', filename='uploads/cropped-LOGO-CEIL.png') }}"  class="img-fluid"/>
+                                        <img src="{{ url_for('static', filename='uploads/cropped-LOGO-CEIL.png') }}"  class="img-fluid" alt=""/>
                                     </div>
                                     <form method="post">
                                         {{ form.hidden_tag() }}
@@ -37,7 +37,10 @@
                                                 {% endfor %}
                                             {% endif %}
                                         {% endwith %}
-                                        <div class="mb3">
+{#                                        {% if 'new_reg' in session %}#}
+{#                                            <div id="counter"></div>#}
+{#                                        {% endif %}#}
+                                        <div class="mb-3">
                                             {{ form.email.label(class="form-label") }}
                                             <div class="input-group has-validation mb-3">
                                                 {% if form.email.errors %}
@@ -95,8 +98,17 @@
         $(document).ready(function (){
             $('.toast').toast('show');
         })
+        {#var _seconds = 90;#}
+        {#var el = document.getElementById('counter');#}
+        {#var cancel=setInterval(#}
+        {#    function () {#}
+        {#        _seconds -=1;#}
+        {#        if( _seconds >= 0){#}
+        {#            el.innerText="Vous avez "+_seconds+" secondes pour activer votre email"#}
+        {#        }#}
+        {#    }, 1000#}
+        {#);#}
     </script>
-
     <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 
 </body>

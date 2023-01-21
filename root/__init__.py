@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from flask import Flask
 from flask_login import LoginManager
-from flask_mail import Mail
+from flask_redmail import RedMail
 from config import config
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ database = SQLAlchemy()
 
 login = LoginManager(app)
 
-mail = Mail()
+mail = RedMail()
 
 def create_app(config_name):
     app.config.from_object(config[config_name])
@@ -28,12 +28,13 @@ def create_app(config_name):
     app.register_blueprint(admin_bp)
 
     database.init_app(app)
-    app.config['MAIL_USE_SSL'] = True
-    app.config['MAIL_USE_TLS'] = False
-    app.config['MAIL_PORT'] = 465
-    app.config['MAIL_SERVER'] = "smtp.gmail.com"
-    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+    # app.config['MAIL_USE_SSL'] = True
+    # app.config['MAIL_USE_TLS'] = False
+    app.config['EMAIL_PORT'] = 0
+    app.config['EMAIL_HOST'] = "smtp.gmail.com"
+    app.config['EMAIL_SENDER'] = "no-reply@ceil-bba.com"
+    app.config['EMAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+    app.config['EMAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 
 
     mail.init_app(app)

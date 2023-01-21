@@ -55,8 +55,8 @@ class RegistrationForm(FlaskForm):
     first_name = StringField('Nom: ', validators=[DataRequired()])
     last_name = StringField('Prénom: ', validators=[DataRequired()])
     birthday = DateField('Date de naissance: ')
-    birth_city = SelectField('Commune de naissance', coerce=int, validate_choice=False)
-    birth_state = SelectField('Lieu de naissance: ', coerce=int, validate_choice=False)
+    # birth_city = SelectField('Commune de naissance', coerce=int, validate_choice=False)
+    birth_state = SelectField('Lieu de naissance: ', validate_choice=False)
     email = StringField('Email: ', validators=[DataRequired()])
     password = PasswordField('Mot de passe:', validators=[DataRequired()])
     category = QuerySelectField('Catégorie', query_factory=lambda : Category.query.all())
@@ -76,7 +76,7 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         if email_regex.search(email.data) is None:
             raise ValidationError('Email Invalid')
-        user = User.query.filter_by(email=email.data).first()
+        user = User.query.filter_by(email=email.data).filter_by(is_verified = True).first()
         if user:
             raise ValidationError('Cet email est déjà utilisé')
 

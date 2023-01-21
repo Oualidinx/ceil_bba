@@ -13,6 +13,7 @@ Flask==2.2.2
 Flask-Login==0.6.2
 Flask-Mail==0.9.1
 Flask-Migrate==4.0.0
+Flask-Redmail==0.3.0
 Flask-SQLAlchemy==3.0.2
 flask-weasyprint==1.0.0
 Flask-WTF==1.0.1
