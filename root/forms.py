@@ -51,16 +51,17 @@ class UpdateInfoForm(FlaskForm):
     #     if user:
     #         raise ValidationError('Cet email est déjà utilisé')
 
+
 class RegistrationForm(FlaskForm):
-    first_name = StringField('Nom: ', validators=[DataRequired()])
-    last_name = StringField('Prénom: ', validators=[DataRequired()])
+    first_name = StringField('Nom: ', validators=[DataRequired('Champs obligatoire')])
+    last_name = StringField('Prénom: ', validators=[DataRequired('Champs obligatoire')])
     birthday = DateField('Date de naissance: ')
-    # birth_city = SelectField('Commune de naissance', coerce=int, validate_choice=False)
-    birth_state = SelectField('Lieu de naissance: ', validate_choice=False)
-    email = StringField('Email: ', validators=[DataRequired()])
-    password = PasswordField('Mot de passe:', validators=[DataRequired()])
+    birth_city = StringField('Commune de naissance', validators=[DataRequired('Champs obligatoire')])
+    birth_state = SelectField('Wilaya de naissance: ', validate_choice=False)
+    email = StringField('Email: ', validators=[DataRequired('Champs obligatoire')])
+    password = PasswordField('Mot de passe:', validators=[DataRequired('Champs obligatoire')])
     category = QuerySelectField('Catégorie', query_factory=lambda : Category.query.all())
-    confirm_password = PasswordField('Confirmer Mot de passe:', validators=[DataRequired(),
+    confirm_password = PasswordField('Confirmer Mot de passe:', validators=[DataRequired('Champs obligatoire'), 
                                                                             EqualTo('password',
                                                                             message="Vérifier bien ce champs S.V.P")])
     submit = SubmitField('Créer le compte')

@@ -91,6 +91,7 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(100))
     birthday = db.Column(db.Date)
     birthplace = db.Column(db.String(100))
+    birth_city = db.Column(db.String(100))
     role = db.Column(db.String(10))
     fk_category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     is_deleted = db.Column(db.SmallInteger, default=0)
@@ -205,6 +206,7 @@ class Subscription(db.Model):
             last_name=User.query.get(self.fk_student_id).last_name,
             birthday = User.query.get(self.fk_student_id).birthday.date() if User.query.get(self.fk_student_id).birthday else None,
             birthplace = User.query.get(self.fk_student_id).birthplace,
+            birth_city = User.query.get(self.fk_student_id).birth_city,
             email=User.query.get(self.fk_student_id).email,
             course_label = Course.query.get(self.fk_course_id).label,
             course_id=self.fk_course_id,

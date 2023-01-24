@@ -78,7 +78,6 @@ def logout():
 @auth_bp.get('/register')
 @auth_bp.post('/register')
 def register():
-
     form = RegistrationForm()
     os.chdir('root')
     os.chdir('static')
@@ -96,7 +95,7 @@ def register():
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.birthday = form.birthday.data
-        # user.birthplace = f'{form.birth_city.data}, {form.birth_state.data}'
+        user.birth_city = form.birth_city.data
         user.birthplace = form.birth_state.data
         user.role = "student"
         user.fk_category_id = int(form.category.data.id)

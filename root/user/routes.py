@@ -77,8 +77,6 @@ def inscrire():
                 subscription.on_test = True
                 subscription.is_waiting = True
                 subscription.note = "Veuillez contacter l'administration du centre afin de fixer une date pour le teste de niveau afin de suivre ce cours"
-
-
         subscription.fk_payment_receipt_id = receipt.id
         subscription.course_day = form.jour.data
         subscription.course_periode = "Matin" if form.periode.data =="m" else "Soir"
@@ -90,6 +88,7 @@ def inscrire():
         flash('Veuillez imprimer le reçu de paiement à payer au niveau du centre. Merci', 'info')
         return redirect(url_for('user_bp.print_receipt', receipt_id = receipt.id))
     return render_template('subscribe.html',form = form, _session = _session)
+
 
 #""""""""""""""""""""
 #   Inscriptions    #
