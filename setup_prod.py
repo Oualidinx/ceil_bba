@@ -12,9 +12,8 @@ with app.app_context():
     user = User()
     user.role = "master"
     user.email= os.environ.get('MAIL_USERNAME')
-    password = secrets.token_hex(8)
+    password = os.environ.get('PASSWORD')
     user.password_hash=generate_password_hash(password,"sha256")
-    print(f"Utilisateur a été créer le mot de passe est {password}")
     database.session.add(user)
     database.session.commit()
 
@@ -27,7 +26,7 @@ with app.app_context():
 
     category = Category()
     category.label='Employé, université Mohamed El Bachir El Ibrahimi'
-    category.price = 6000.00
+    category.price = 1000.00
     category.price_letters="Six-mille dinars Algériens"
     database.session.add(category)
     database.session.commit()
