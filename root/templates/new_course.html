@@ -128,6 +128,11 @@
                         {% endif %}
                     </div>
                 </div>
+                <div class="row mb-4">
+                    <div class="col-mb-6">
+                        <label>Session: {{ _session.label }}</label>
+                    </div>
+                </div>
 {#                <div class="row mb-4">#}
 {#                        <div class="col-md-6">#}
 {#                        {{ form.session.label(class="form-control-label") }}#}
@@ -213,7 +218,7 @@
     <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-             $('.toast').toast('show');
+            $('.toast').toast('show');
             $('select').select2({});
             $('#description').summernote();
         });

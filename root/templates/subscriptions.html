@@ -1,4 +1,4 @@
-{% extends "user_dashboard.html" %}
+{% extends "user_layout.html" %}
 {% block additional_styles %}
     <link href="{{ url_for('static', filename='dist/theme/mermaid.min.css') }}" rel="stylesheet" />
 {% endblock %}
@@ -20,7 +20,15 @@
 {% block additional_scripts %}
     <script src="{{ url_for('static', filename='js/gridjs.umd.js') }}"></script>
     <script>
+
           new gridjs.Grid({
+            autoWidth:true,
+            fixedHeader:true,
+            style:{
+                table:{
+                    'width':"100%"
+                }
+            },
               language:{
                 search: {
                   placeholder: 'Recherche...',

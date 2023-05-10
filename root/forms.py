@@ -108,10 +108,10 @@ class CoursesForm(Form):
 class SubscriptionForm(FlaskForm):
     # courses = FieldList(FormField(CoursesForm), validators=[DataRequired()])
     course = QuerySelectField('Formation:', query_factory=lambda: Course.query.filter_by(is_disabled = False).all())
-    jour = SelectField('Jour', choices = [('Dim','Dimanche'),('Lun', 'Lundi'),('Mar','Mardi'),
+    jour = SelectField('Jour', choices = [('Sam','Samedi'),('Dim','Dimanche'),('Lun', 'Lundi'),('Mar','Mardi'),
                                           ('Mer','Mercredi'),('Jeu','Jeudi')])  # ,('Ven','Vendredi'),('Sam', 'Samedi')
-    periode = RadioField('Periode:', choices=[('m','Matin'),('s','Soir')])
-    on_test = BooleanField('Je veux Passer un teste de niveau')
+    periode = RadioField('Periode:', choices=[('m','Matin'),('s','Après midi')])
+    # on_test = BooleanField('Je veux Passer un teste de niveau')
     submit = SubmitField('Confirmer le choix')
 
 

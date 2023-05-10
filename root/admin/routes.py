@@ -30,6 +30,7 @@ def index():
         _session = Session(label = f'{year}/{year + 1}')
         database.session.add(_session)
         database.session.commit()
+    
     form = EnableSubscription()
     _session = Session.query.all()[-1]
     if request.method == "GET":
@@ -79,6 +80,7 @@ def new_course():
     form = AddCourseForm()
     _session = Session.query.all()[-1]
     session_form = SessionForm()
+    
     if form.validate_on_submit():
         course = Course()
         course.label = form.label.data
@@ -104,7 +106,7 @@ def new_course():
         database.session.commit()
         flash('Ajout avec succès', "success")
         return redirect(url_for('admin_bp.new_course'))
-    return render_template('new_course.html', form = form, session_form = session_form)
+    return render_template('new_course.html', form = form,_session = _session, session_form = session_form)
 
 
 @admin_bp.get('/session/new')
@@ -152,10 +154,11 @@ def get_student(student_id):
     if not student:
         abort(404)
     subscriptions = Subscription.query.filter_by(fk_student_id = student_id).all()
-    subscriptions=[obj.to_dict() for obj in subscriptions]
+    if subscriptions:
+        student = subscriptions[0].repr(['first_name', 'last_name','birthday','birthplace','email','status'])
     return render_template('student_info.html',
-                           student = student.details(),
-                           subscriptions = subscriptions)
+                           student = student,
+                           subscriptions = [obj.repr() for obj in subscriptions])
 
 
 
@@ -252,9 +255,10 @@ def get_students(course_id):
         abort(404)
     users = []
     if course.students:
-        users = [obj.repr(['id','first_name','last_name', 'email', 'course_label', 'course_day', 'course_periode']) for obj in Subscription.query.filter_by(fk_course_id = course_id).all()]
-        # print(users)
-    df = pd.DataFrame(users, columns=['Numéro','Nom' ,'Prénom','Email','La formation','Jour','Période'])
+        users = [obj.repr(['id','first_name','last_name','birthday', 'birthplace',
+                           'course_label', 'course_day', 'course_periode'])
+                                for obj in Subscription.query.filter_by(fk_course_id = course_id).all()]
+    df = pd.DataFrame(users, columns=['Numéro','Nom' ,'Prénom','Date de naissance','Lieu de naissance','La formation','Jour','Période'])
     response = make_response(df.to_csv())
     response.headers['Content-Disposition'] = f"attachment; filename=list_etudiants_{Course.query.get(course_id).label}.csv"
     response.headers['Content-Type'] = "text/csv"
@@ -281,14 +285,14 @@ def edit_course(course_id):
         form.price.data = course.price
         form.description.data = course.description
         form.limit_number.data = course_language.limit_number
-        # form.on_test.data = course.on_test
+        form.on_test.data = course.on_test
     if form.validate_on_submit():
         course.label = form.label.data
         if form.price.data:
             course.price = float(form.price.data)
         cleaned_data = bleach.clean(form.description.data, tags=ALLOWED_TAGS)
         course.description = cleaned_data
-        # course.on_test = form.on_test.data
+        course.on_test = form.on_test.data
         course.fk_session_id = Course.query.get(course_id).fk_session_id # int(form.session.data.id)
         if course.is_disabled == True and int(form.limit_number.data) > course.limit_number:
             course.is_disabled = False
@@ -321,9 +325,11 @@ def all_students():
 def all_students_csv():
     users = []
     if  Subscription.query.all():
-        #
-        users = [obj.repr(['id','first_name','last_name','email','course_label','course_day','course_periode']) for obj in Subscription.query.join(User, User.id == Subscription.fk_student_id).filter(User.role=="student").all() if obj.is_accepted == 1]
-    df = pd.DataFrame(users, columns=['Numéro','Nom' ,'Prénom','Email','La formation','Jour', 'Période'])
+        users = [obj.repr(['id','first_name','last_name','birthday',
+                           'birthplace','course_label','course_day','course_periode']) for obj in Subscription.query.join(User, User.id == Subscription.fk_student_id).filter(User.role=="student").all()]
+
+    df = pd.DataFrame(users, columns=['Numéro','Nom' ,'Prénom','Date de naissance',
+                                      'Lieu de naissance','La formation','Jour', 'Période'])
     response = make_response(df.to_csv())
     response.headers['Content-Disposition'] = f"attachment; filename=list_etudiants.csv"
     response.headers['Content-Type'] = "text/csv"

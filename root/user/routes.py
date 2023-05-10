@@ -3,13 +3,19 @@ from flask_login import current_user, login_required
 from root import database
 from root.user import user_bp
 from root.models import *
-from root.forms import SubscriptionForm, CoursesForm
+from root.forms import SubscriptionForm
 from sqlalchemy.sql import or_, and_
 from flask_weasyprint import HTML, render_pdf
 
 
 @user_bp.before_request
 def user_before_request():
+    _session = Session.query.all()[-1]
+    if not _session.is_disabled and _session.end_date < datetime.now():
+        _session.is_disabled = True
+        database.session.add(_session)
+        database.session.commit()
+
     _session = Session.query.all()[-1]
     if _session is not None and _session.is_disabled == False:
         for course in _session.courses:
@@ -25,20 +31,22 @@ def user_before_request():
 @user_bp.get('/index')
 @login_required
 def index():
+    if 'endpoint' in session:
+        del session['endpoint']
     return render_template('user_dashboard.html')
 
 @user_bp.get('/inscrire')
 @user_bp.post('/inscrire')
 @login_required
 def inscrire():
+    session['endpoint'] = 'user'
     form = SubscriptionForm()
     _session = Session.query.all()[-1]
     if not _session:
         flash('Pas de formations/sessions pour le moment','info')
         return redirect(url_for("user_bp.index"))
-    if _session and request.method=="GET" and _session.is_disabled == True:
-        flash("L'inscription n'est pas encore disponible","warning")
-        # return render_template('subscribe.html', form=form, _session=_session)
+    if _session and _session.is_disabled == True:
+        flash("L'inscription n'est pas disponible","warning")
         return redirect(url_for('user_bp.index'))
     if form.validate_on_submit():
         course_language = CourseLanguage.query.filter_by(fk_course_id=form.course.data.id).first()
@@ -61,7 +69,7 @@ def inscrire():
         subscription.fk_student_id = current_user.id
         # course = Course.query.get(int(form.course.data.id))
 
-        if not form.on_test.data:
+        if not form.course.data.on_test:
             subscription.is_waiting = False
             subscription.is_accepted = 1
             subscription.note = "Félicitations, vous avez été accepté pour continue les démarches d'inscription pour ce cours."
@@ -74,19 +82,19 @@ def inscrire():
                 flash('Vous ne pouvez pas passer un test de niveau A1 ou A2')
                 return render_template('subscribe.html',form = form, _session = _session)
             else:
-                subscription.on_test = True
                 subscription.is_waiting = True
                 subscription.note = "Veuillez contacter l'administration du centre afin de fixer une date pour le teste de niveau afin de suivre ce cours"
         subscription.fk_payment_receipt_id = receipt.id
         subscription.course_day = form.jour.data
-        subscription.course_periode = "Matin" if form.periode.data =="m" else "Soir"
+        subscription.course_periode = "Matin" if form.periode.data =="m" else "Après midi"
         database.session.add(subscription)
         database.session.commit()
         database.session.add(course_language)
         database.session.commit()
         flash('Votre choix a été confirmer. Merci','success')
         flash('Veuillez imprimer le reçu de paiement à payer au niveau du centre. Merci', 'info')
-        return redirect(url_for('user_bp.print_receipt', receipt_id = receipt.id))
+        if not form.course.data.on_test:
+            return redirect(url_for('user_bp.print_receipt', receipt_id = receipt.id))
     return render_template('subscribe.html',form = form, _session = _session)
 
 
@@ -96,6 +104,7 @@ def inscrire():
 @user_bp.get('/inscrire/data')
 @login_required
 def subscriptions():
+    session['endpoint'] = 'user'
     courses = User.query.get(current_user.id).courses
     student_subs = [
         {
@@ -111,10 +120,11 @@ def subscriptions():
     ]
     return render_template('subscriptions.html', courses=student_subs)
 
-
+from num2words import num2words
 @user_bp.route('/subscription/<int:receipt_id>/print', methods=['GET','POST'])
 @login_required
 def print_receipt(receipt_id):
+    session['endpoint'] = 'user'
     subscription = Subscription.query.filter_by(fk_payment_receipt_id = receipt_id).first()
     if not subscription:
         abort(404)
@@ -125,8 +135,9 @@ def print_receipt(receipt_id):
         abort(403)
     cost = Category.query.get_or_404(student.fk_category_id)
     date = subscription.subscription_date
+    total_letters = num2words(cost.price_letters.total, lang='fr') + " dinars algérien"
     _session = Session.query.get_or_404(Course.query.get(subscription.fk_course_id).fk_session_id)
     html = render_template('payment_receipt.html', student = student,
-                           cost = cost.price, cost_letters =  cost.price_letters,
+                           cost = cost.price, cost_letters =  total_letters,
                            date = date, _session = _session, number = receipt_id)
     return render_pdf(HTML(string=html))

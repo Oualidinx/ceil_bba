@@ -4,16 +4,19 @@
 
            <style>
                @font-face {
-                  font-family: Roboto;
+                  font-family: Roboto-Regular;
                   src: url("{{ url_for('static', filename='webfonts/Roboto-Regular.ttf') }}");
+                }
+               @font-face {
+                  font-family: Roboto-Medium;
+                  src: url("{{ url_for('static', filename='webfonts/Roboto-Medium.ttf') }}");
                 }
                 @page {
                     size: A5 landscape;
                     margin: 1cm;
-
                 }
                body{
-                   font-family: Roboto, serif;
+                   font-family: Roboto-Regular, serif;
                }
            </style>
       </head>
@@ -41,7 +44,7 @@
           </tr>
           <tr><td><br></td></tr>
           <tr>
-              <td>La somme en chiffres:  <span style="color: white">...........................</span> {{ '{:20,.2f}'.format(cost) }} DA</td><td></td>
+              <td>La somme en chiffres:  <span style="color: white">...........................</span> {{ '{:,.2f}'.format(cost) }} DA</td><td></td>
           </tr>
           <tr><td><br></td></tr>
           <tr><td>La somme en lettres:  <span style="color: white">.........................</span> {{ cost_letters }} </td></tr>
@@ -52,7 +55,7 @@
           <tr><td><br></td></tr>
           <tr><td><br></td></tr>
           <tr>
-              <td>Note: Le propriétaire de ce reçu devera l'imprimer pour être validé par la direction du centre et le joindre au dossier d'inscription</td>
+              <td style="font-weight: bold; font-family: Roboto-Medium,serif;">Note: Le propriétaire de ce reçu devera l'imprimer pour être validé par la direction du centre et le joindre au dossier d'inscription</td>
           </tr>
       </table>
       </body>

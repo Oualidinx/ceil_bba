@@ -22,6 +22,7 @@ class Course(db.Model):
     label = db.Column(db.String(100))
     price = db.Column(db.Float, default = 0)
     is_disabled = db.Column(db.Boolean, default = False)
+    on_test = db.Column(db.Boolean, default = False)
     fk_session_id=db.Column(db.Integer, db.ForeignKey('session.id'))
     description = db.Column(db.String(2500))
     students = db.relationship('User', secondary="subscription",
@@ -81,8 +82,6 @@ class Level(db.Model):
     label = db.Column(db.String(100))
     def __repr__(self):
         return f'{self.label}'
-
-
 
 class User(UserMixin, db.Model):
     __tablename__="user"
@@ -183,8 +182,7 @@ class Subscription(db.Model):
     fk_payment_receipt_id = db.Column(db.Integer, db.ForeignKey('payment_receipt.id'))
     is_waiting = db.Column(db.Boolean, default = True)
     is_accepted = db.Column(db.Integer, default = -1)
-    on_test = db.Column(db.Boolean, default=False)
-    subscription_date = db.Column(db.DateTime, default = datetime.utcnow())
+    subscription_date = db.Column(db.DateTime, default = datetime.now())
     charges_paid = db.Column(db.Boolean, default = False)
     course_day = db.Column(db.String(15))
     course_periode = db.Column(db.String(10))
@@ -200,23 +198,26 @@ class Subscription(db.Model):
         )
 
     def repr(self, columns = None):
+        user = User.query.get(self.fk_student_id)
+        course = Course.query.get(self.fk_course_id)
         all_details = dict(
             id=self.fk_student_id,
-            first_name=User.query.get(self.fk_student_id).first_name,
-            last_name=User.query.get(self.fk_student_id).last_name,
-            birthday = User.query.get(self.fk_student_id).birthday.date() if User.query.get(self.fk_student_id).birthday else None,
-            birthplace = User.query.get(self.fk_student_id).birthplace,
-            birth_city = User.query.get(self.fk_student_id).birth_city,
-            email=User.query.get(self.fk_student_id).email,
-            course_label = Course.query.get(self.fk_course_id).label,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            birthday = user.birthday.strftime('%d/%m/%Y') if user.birthday else '/',
+            birthplace = user.birthplace+', '+user.birth_city if user.birthplace and user.birth_city else '/',
+            email=user.email,
+            date=self.subscription_date.strftime('%d/%m/%Y'),
+            course_label = course.label,
             course_id=self.fk_course_id,
             course_day=self.course_day,
             course_periode = self.course_periode,
+            session=Session.query.get(course.fk_session_id).label,
             status = 1 if (self.is_accepted == 1 or not self.on_test) else -1 if (self.is_waiting and self.is_accepted == -1)  else 0,
             note = self.note
         )
         if columns:
-            return (all_details[k] for k in columns)
+            return (all_details[key] for key in columns)
         return all_details
 
 class Note(db.Model):
@@ -226,14 +227,6 @@ class Note(db.Model):
     fk_level_id = db.Column(db.Integer, db.ForeignKey('level.id'))
     fk_language_id = db.Column(db.Integer, db.ForeignKey('language.id'))
     mark = db.Column(db.Float, default = 0)
-
-
-# class LanguageLevel(db.Model):
-#     __tablename__="language_level"
-#     id = db.Column(db.Integer, primary_key=True)
-#     fk_level_id = db.Column(db.Integer, db.ForeignKey('level.id'))
-#     fk_language_id = db.Column(db.Integer, db.ForeignKey('language.id'))
-
 
 class CourseLanguage(db.Model):
     __tablename__="course_language"

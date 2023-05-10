@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2-bootstrap-5.min.css') }}">
 
 
     <title>{{ session['title'] }}</title>
@@ -12,9 +13,9 @@
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
                 <div class="container-fluid">
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-center p-5 mt-lg-4">
                         <div class="col-lg-5">
-                            <div class="card shadow-lg border-0 rounded-0 mt-5">
+                            <div class="card shadow-lg border-0 rounded-0">
                                 <div class="card-header">
                                     <h3 class="text-center font-weight-light my-4">
                                         Créer un compte pour s'inscrite à une formation <br>
@@ -94,14 +95,14 @@
                                                 {{ form.birth_state.label(class="form-control-label") }}
                                                 <div class="input-group has-validation">
                                                     {% if form.birth_state.errors %}
-                                                        {{ form.birth_state(class="form-control form-control-md is-invalid") }}
+                                                        {{ form.birth_state(class="form-select is-invalid") }}
                                                         <div class="invalid-feedback">
                                                             {% for error in form.birth_state.errors %}
                                                                 <span>{{ error }}</span>
                                                             {% endfor %}
                                                         </div>
                                                     {% else %}
-                                                        {{ form.birth_state(class="form-control form-control-md") }}
+                                                        {{ form.birth_state(class="form-select") }}
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -208,7 +209,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="mb-3">
+                                            <div class="mb-3 text-center">
                                                 <div class="form-group">
                                                     Vous déjà un compte? Vous pouvez <a class="link" href="{{url_for('auth_bp.login')}}">connecter</a>
                                                 </div>
@@ -229,11 +230,22 @@
     <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
     <script>
         $(document).ready(function(){
-            $('select').select2({
-                width: 'element',
-                height: 'element',
-                placeholder:"Séléctionnez une option...",
-                language:"fr"
+            $('#category').select2({
+                theme: 'bootstrap-5',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                selectionCssClass: 'select2--small',
+                dropdownCssClass: 'select2--small',
+                language:'fr',
+                placeholder: 'Catégorie...',
+            });
+
+            $('#birth_state').select2({
+                theme: 'bootstrap-5',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                selectionCssClass: 'select2--small',
+                dropdownCssClass: 'select2--small',
+                language:'fr',
+                placeholder: 'Wilaya...',
             });
             $('.toast').toast('show');
         });

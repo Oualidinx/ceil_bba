@@ -52,7 +52,7 @@
                                     Catégories
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <div class="collapse {% if session['endpoint']=='categories' %}show{% endif %}" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link" href="{{ url_for('admin_bp.categories') }}">Voir La liste des catégories</a>
                                     </nav>
@@ -62,7 +62,7 @@
                                     Formations
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                <div class="collapse {% if session['endpoint']=='courses' %}show{% endif %}" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                          <a class="nav-link" href="{{ url_for('admin_bp.formation') }}">Voir La liste des formations</a>
                                     </nav>
@@ -72,7 +72,7 @@
                                     Étudiants
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapseAggregate" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <div class="collapse {% if session['endpoint']=='students' %}show{% endif %}" id="collapseAggregate" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link" href="{{ url_for('admin_bp.all_students') }}">Voir La liste des étudiants</a>
                                     </nav>
@@ -83,7 +83,7 @@
                                     Les langues
                                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                 </a>
-                                <div class="collapse" id="collapseAggregate__" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <div class="collapse {% if session['endpoint']=='langues' %}show{% endif %}" id="collapseAggregate__" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link" href="{{ url_for('admin_bp.languages') }}">Voir La liste de langues</a>
                                     </nav>

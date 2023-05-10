@@ -1,6 +1,7 @@
-{% extends "user_dashboard.html" %}
+{% extends "user_layout.html" %}
 {% block additional_styles %}
     <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/select2-bootstrap-5.min.css') }}" rel="stylesheet" />
 {% endblock %}
 
 {% block main_tag %}
@@ -20,107 +21,108 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+        <div class="row justify-content-center">
+            <div class="card container mt-4">
+                <div class="card-header">
+                    <h2 class="h2">  S'inscrire </h2>
+                </div>
+                <div class="card-body">
 
-        <div class="card justify-content-center mt-4">
-            <div class="card-header">
-                <h2 class="h2">  S'inscrire </h2>
-            </div>
-            <div class="card-body">
+                    {% if (not _session.is_disabled and _session.is_active) and _session.courses %}
+                        <div class="row" >
+                            <h3 class="h3">
+                                Sélectionnez votre choix
+                            </h3>
+                        </div>
+                        <form method="post">
+                            {{form.hidden_tag()}}
 
-                {% if (not _session.is_disabled and _session.is_active) and _session.courses %}
-                    <div class="row">
-                        <h3 class="h3">
-                            Sélectionnez votre choix
-                        </h3>
-                    </div>
-                    <form method="post">
-                        {{form.hidden_tag()}}
-
-                        <div class="row mb-4">
-                            <div class="col-sm-1">
-                                {{ form.course.label(class='form-label') }}
+                            <div class="row mb-4">
+                                <div class="col-sm-1">
+                                    {{ form.course.label(class='form-label') }}
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group has-validation">
+                                         {% if form.course.errors %}
+                                            {{form.course(class="select-course form-control form-control-md is-invalid")}}
+                                            {% for error in form.course.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{error}}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {{form.course(class="select-course form-control form-control-md")}}
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-2">
-                                <div class="input-group has-validation">
-                                     {% if form.course.errors %}
-                                        {{form.course(class="select-course form-control form-control-md is-invalid")}}
-                                        {% for error in form.course.errors %}
+    {#                        <div class="row mb-4">#}
+    {#                            <div class="col-md-6">#}
+    {#                                {{ form.on_test() }}#}
+    {#                                {{ form.on_test.label(class="form-control-label") }}#}
+    {##}
+    {#                            </div>#}
+    {#                        </div>#}
+                            <div class="row mb-4">
+                                <div class="col-md-1">
+                                    {{ form.jour.label(class="form-control-label") }}
+                                </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group has-validation">
+                                         {% if form.jour.errors %}
+                                            {{form.jour(class="form-control form-control-md is-invalid")}}
+                                            {% for error in form.jour.errors %}
                                             <div class="invalid-feedback">
                                                 {{error}}
                                             </div>
                                         {% endfor %}
-                                    {% else %}
-                                        {{form.course(class="select-course form-control form-control-md")}}
-                                    {% endif %}
+                                        {% else %}
+                                            {{form.jour(class="form-control form-control-md")}}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                {{ form.on_test() }}
-                                {{ form.on_test.label(class="form-control-label") }}
-
-                            </div>
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col-md-1">
-                                {{ form.jour.label(class="form-control-label") }}
-                            </div>
-                                <div class="col-md-2">
-                                    <div class="input-group has-validation">
-                                     {% if form.jour.errors %}
-                                        {{form.jour(class="form-control form-control-md is-invalid")}}
-                                        {% for error in form.jour.errors %}
-                                        <div class="invalid-feedback">
-                                            {{error}}
-                                        </div>
-                                    {% endfor %}
-                                    {% else %}
-                                        {{form.jour(class="form-control form-control-md")}}
-                                    {% endif %}
+                            <div class="row mb-4">
+                                <div class="col-md-1">
+                                    {{ form.periode.label(class="form-control-label") }}
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col-md-1">
-                                {{ form.periode.label(class="form-control-label") }}
-                            </div>
-                            <div class="col-md-3">
-                                 {% if form.periode.errors %}
-                                     <div class="form-check form-check-inline is-invalid">
-                                        {% for subfield in form.periode %}
-                                            <div class="form-check form-check-inline">
-                                             {{ subfield(class="form-check-input") }}
-                                             {{ subfield.label(class='form-check-label') }}
-                                            </div>
-                                        {% endfor %}
-                                     </div>
-                                    {% for error in form.periode.errors %}
-                                        <div class="invalid-feedback">
-                                            {{error}}
-                                        </div>
-                                    {% endfor %}
-                                 {% else %}
-                                     <div class="form-check form-check-inline">
+                                <div class="col-md-3">
+                                     {% if form.periode.errors %}
+                                         <div class="form-check form-check-inline is-invalid">
                                             {% for subfield in form.periode %}
                                                 <div class="form-check form-check-inline">
                                                  {{ subfield(class="form-check-input") }}
                                                  {{ subfield.label(class='form-check-label') }}
                                                 </div>
                                             {% endfor %}
-                                     </div>
-                                {% endif %}
+                                         </div>
+                                        {% for error in form.periode.errors %}
+                                            <div class="invalid-feedback">
+                                                {{error}}
+                                            </div>
+                                        {% endfor %}
+                                     {% else %}
+                                         <div class="form-check form-check-inline">
+                                                {% for subfield in form.periode %}
+                                                    <div class="form-check form-check-inline">
+                                                     {{ subfield(class="form-check-input") }}
+                                                     {{ subfield.label(class='form-check-label') }}
+                                                    </div>
+                                                {% endfor %}
+                                         </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-4">
-                             <div class="col-md-4" style="text-align: right;">
-                                {{form.submit(class="btn btn-md btn-primary")}}
+                            <div class="row mb-4">
+                                 <div class="col-md-4" style="text-align: right;">
+                                    {{form.submit(class="btn btn-md btn-primary")}}
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                {% else %}
-                    <h5 class="text-center">Période d'inscription est terminée ou pas encore disponible. Merci</h5>
-                {% endif %}
+                        </form>
+                    {% else %}
+                        <h5 class="text-center">Période d'inscription est terminée ou pas encore disponible. Merci</h5>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -131,7 +133,22 @@
     <script>
         $(document).ready(function () {
             $('.toast').toast('show');
-            $('.select-course').select2();
+
+            $('#jour').select2({
+                theme: 'bootstrap-5',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                selectionCssClass: 'select2--small',
+                dropdownCssClass: 'select2--small',
+                placeholder: 'Jour...',
+            });
+
+            $('#course').select2({
+                theme: 'bootstrap-5',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                selectionCssClass: 'select2--small',
+                dropdownCssClass: 'select2--small',
+                placeholder: 'La formations...',
+            });
         })
     </script>
 {% endblock additional_scripts%}

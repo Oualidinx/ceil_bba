@@ -13,17 +13,17 @@
             columns: [
                 { id: 'date', name: 'Date d\'inscription' },
                 { id: 'label', name: 'Titre' },
-                { id: 'status', name: 'Status' },
+                {#{ id: 'status', name: 'Status' },#}
                 {id:'session', name:'Session'}
             ],
             data: [
               {% for subscription in subscriptions %}
                 {
-                    id: '{{ subscription["date"] }}',
-                    label: '{{ subscription["course"] }}',
-                    status: gridjs.html(`{% if subscription["is_waiting"] == True%} <span class="badge rounded-pill" style="background-color:#E06000;">En attente</span> \
-                             {%elif subscription["is_accepted"] == 1%} <span class="badge rounded-pill" style="background-color:#004D33;">admis</span> \
-                             {% elif subscription["is_accepted"] == -1 %} <span class="badge rounded-pill" style="background-color:#A6001A;">non admis</span> {% endif %}`),
+                    date: '{{ subscription["date"] }}',
+                    label: '{{ subscription["course_label"] }}',
+                    {#status: gridjs.html(`{% if subscription["is_waiting"] == True%} <span class="badge rounded-pill" style="background-color:#E06000;">En attente</span> \#}
+{#                             {%elif subscription["is_accepted"] == 1%} <span class="badge rounded-pill" style="background-color:#004D33;">admis</span> \#}
+{#                             {% elif subscription["is_accepted"] == -1 %} <span class="badge rounded-pill" style="background-color:#A6001A;">non admis</span> {% endif %}`),#}
                     session:'{{ subscription["session"] }}'
                 },
               {% endfor %}
@@ -75,7 +75,14 @@
 {#                            <td style="font-weight: bold;">Date naissance: </td><td> {{ student['birthday'] }}</td>#}
 {#                        </tr>#}
                         <tr>
-                            <td style="font-weight: bold;">Adresse électronique: </td><td> {{ student['email'] }}</td>
+                            <td style="font-weight: bold;">Adresse électronique: </td> <td> {{ student['email'] }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Lieu de naissance: </td> <td> {{ student['birthplace'] }}</td>
+                        </tr>
+
+                        <tr>
+                            <td style="font-weight: bold;">Date de naissance: </td> <td> {{ student['birthday'] }}</td>
                         </tr>
                     </table>
                 </div>

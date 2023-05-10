@@ -53,6 +53,13 @@
             $('.toast').toast('show');
         })
         new gridjs.Grid({
+            autoWidth:true,
+            fixedHeader:true,
+            style:{
+                table:{
+                    'width':"100%"
+                }
+            },
             language:{
                 search: {
                   placeholder: 'Recherche...',
@@ -96,7 +103,7 @@
                               first_name :'{{ student["first_name"] }}',
                               last_name :'{{ student["last_name"] }}',
                               email :'{{ student["email"] }}',
-                              course_label:'{{ student['course_label'] }}',
+                              course:'{{ student['course_label'] }}',
                               course_day:'{{ student['course_day'] }}',
                               course_periode:'{{ student['course_periode'] }}',
                               status:  gridjs.html(`{% if student["status"] == -1%} <span class="badge rounded-pill" style="text-color:black; background-color:#E06000;">En attente</span> \
@@ -109,9 +116,6 @@
                                   </a>
                                   <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     <li><a class="dropdown-item" href="{{ url_for('admin_bp.get_student',student_id=student['id']) }}">Profile etudiant</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('admin_bp.accept',course_id=student['course_id'],student_id=student['id']) }}">Avis d'inscription favorable</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('admin_bp.denies',course_id=student['course_id'],student_id=student['id']) }}">
-                                        Avis d'inscription défavorable</a></li>
                                   </ul>
                             </div>`
                               )

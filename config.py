@@ -6,7 +6,7 @@ class Config:
         pass
 
 class Development(Config):
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:1091eb5a6c62@localhost/ceil_bba"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:1091eb5a6c62@localhost:5432/ceil_bba"
 
 class Testing(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
@@ -15,11 +15,11 @@ class Production(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     credentials = dict(
         driver ="mysql",# pilote de la base de données ,  mysql ou bien postgresql
-        database_name = "" ,#Nom de la base de donnée,
-        host = "",
-        password ="",# mot de passe de la base de données,
-        user = "")
-    SQLALCHEMY_DATABASE_URI = "{driver}://{user}:{password}@{host}/{database_name}".format(**credentials)
+        database_name = "ceil_bba" ,#Nom de la base de donnée,
+        host = "localhost",
+        password =":1091eb5a6c62",# mot de passe de la base de données,
+        user = "5432")
+    SQLALCHEMY_DATABASE_URI = "{driver}://{user}{password}@{host}/{database_name}".format(**credentials)
 
 class Testing(Config):
     SQLALCHEMY_DATABASE_URI="sqlite:///database.db"

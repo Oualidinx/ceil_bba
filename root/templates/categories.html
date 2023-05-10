@@ -62,7 +62,14 @@
             $('.toast').toast('show');
         });
         new gridjs.Grid({
-         language:{
+            autoWidth:true,
+            fixedHeader:true,
+            style:{
+                table:{
+                    'width':"100%"
+                }
+            },
+             language:{
                 search: {
                   placeholder: 'Recherche...',
                 },
@@ -85,7 +92,8 @@
                 error: 'Erreur pendant le chargement des données'},
             columns: [
                   { id: 'id', name: 'Indexe' },
-                  { id: 'label', name: 'Titre' }
+                  { id: 'label', name: 'Titre' },
+                {id:'actions', name:"Actions"}
             ],
             data: ()=>{
                 return new Promise(resolve => {
