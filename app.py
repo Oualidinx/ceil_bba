@@ -17,7 +17,6 @@ migrate = Migrate(app=app, db=database)
 def index():
     return redirect(url_for('auth_bp.login'))
 
-
 @app.shell_context_processor
 def make_shell_context():
     return dict(app=app,
