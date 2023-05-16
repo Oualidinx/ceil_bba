@@ -4,8 +4,8 @@ import os
 from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 load_dotenv('.env')
-app = create_app("prod")
-with app.app_context():
+application = create_app("prod")
+with application.app_context():
     db.create_all()
     user = User()
     user.role = "master"
