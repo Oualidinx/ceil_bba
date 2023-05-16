@@ -64,7 +64,7 @@
     "full.screen.before.presentation.mode": "false",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/pc/Desktop",
+    "last_opened_file_path": "//wsl$/Ubuntu/home/oualidinx/coding_projects/CEIL_BBA",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.detected.package.tslint": "true",
@@ -84,11 +84,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA" />
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\js" />
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\static\css" />
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root" />
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\user" />
-      <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA\root\admin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu\home\oualidinx\coding_projects\CEIL_BBA" />
@@ -186,7 +186,7 @@
       <workItem from="1684048644938" duration="714000" />
       <workItem from="1684084746237" duration="223000" />
       <workItem from="1684095517680" duration="67000" />
-      <workItem from="1684230278079" duration="1988000" />
+      <workItem from="1684230278079" duration="2180000" />
     </task>
     <servers />
   </component>

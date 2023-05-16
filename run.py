@@ -1,4 +1,5 @@
 from root import create_app, database as db
+from flask import redirect, url_for
 from root.models import User, Category, Level, Language
 import os
 from werkzeug.security import generate_password_hash
@@ -72,5 +73,9 @@ with application.app_context():
     langue = Language(label="Anglais")
     db.session.add(langue)
     db.session.commit()
+
+@application.route('/')
+def index():
+    return redirect(url_for('auth_bp.register'))
 if __name__=="__main__":
-    app.run(debug=False)
+    application.run(debug=False)
