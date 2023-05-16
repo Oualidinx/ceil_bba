@@ -12,7 +12,7 @@ def define():
     session['title'] = "CEIL Bordj Bou Arreridj"
 
 def send_reset_email(user, url, subject):
-    user_name = "ceil@univ-bba.dz"
+    user_name = os.environ.get('MAIL_USERNAME')+'@'+'univ-bba.dz'
     if user.role!="master" and user.is_deleted==0:
         # msg.body = render_template('verify_email.html', url = url_for(url, token=user.get_token(), _external=True))
         mail.send(subject=subject,

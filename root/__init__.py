@@ -28,12 +28,9 @@ def create_app(config_name):
     app.register_blueprint(admin_bp)
 
     database.init_app(app)
-    # app.config['MAIL_USE_SSL'] = True
-    # app.config['MAIL_USE_TLS'] = False
     app.config['EMAIL_PORT'] = 0
     app.config['EMAIL_HOST'] = "smtp.gmail.com"
     app.config['EMAIL_SENDER'] = "no-reply@ceil-bba.com"
-    app.config['EMAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
     app.config['EMAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 
 
