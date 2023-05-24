@@ -12,7 +12,7 @@
     </style>
 {% endblock %}
 {% block main_tag %}
-    <div class="container">
+    <div class="container p-5">
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -30,7 +30,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div class="row">
+        <div class="row mt-5">
             <div class="col">
                 <div class="card">
                     <div class="card-header card-header-primary">
@@ -41,9 +41,73 @@
                       </div>
                     </div>
                     <div class="card-body">
-                        <div class="btn-group hstack gap-3">
-                            <div class="border ms-auto">
-                                <a class="btn btn-md btn-primary" href="{{ url_for('admin_bp.new_course') }}">Nouveau</a>
+                        <div class="row d-flex justify-content-end">
+                            <div class="col-auto btn-group gap-3">
+                                <a class="btn btn-md btn-primary rounded rounded-pill" href="{{ url_for('admin_bp.new_course') }}">Nouveau</a>
+                                <button type="button" class="btn btn-outline-secondary rounded rounded-pill" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fa fa-circle-plus"></i>
+                                    Nouvelle session
+                                </button>
+
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Nouvelle session</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post">
+                                                    {{ session_form.hidden_tag() }}
+                                                    <div class="form-group has-validation">
+                                                        {{ session_form.label.label(class="form-control-label") }}
+                                                        {% if session_form.label.errors %}
+                                                            {{ session_form.label(class="form-control is-invalid") }}
+                                                            {% for error in session_form.label.errors %}
+                                                                <div class="invalid-feedback">
+                                                                    {{ error }}
+                                                                </div>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            {{ session_form.label(class="form-control form-control-md") }}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="form-group has-validation">
+                                                        {{ session_form.start_date.label(class="form-control-label") }}
+                                                        {% if session_form.start_date.errors %}
+                                                            {{ session_form.start_date(class="form-control form-control-md is-invalid") }}
+                                                            {% for error in session_form.start_date.errors %}
+                                                                <div class="invalid-feedback">
+                                                                    {{ error }}
+                                                                </div>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            {{ session_form.start_date(class="form-control form-control-md") }}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="form-group has-validation">
+                                                        {{ session_form.end_date.label(class="form-control-label") }}
+                                                        {% if session_form.end_date.errors %}
+                                                            {{ session_form.end_date(class="form-control is-invalid") }}
+                                                            {% for error in session_form.end_date.errors %}
+                                                                <div class="invalid-feedback">
+                                                                    {{ error }}
+                                                                </div>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            {{ session_form.end_date(class="form-control form-control-md") }}
+                                                        {% endif %}
+                                                    </div>
+                                                <br>
+                                                <div class="form-group" style="text-align: right;">
+                                                    <button type="button" class="btn btn-outline-secondary rounded rounded-pill" data-bs-dismiss="modal">Fermer</button>
+                                                    {{ session_form.submit(class="btn btn-primary rounded rounded-pill") }}
+                                                </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div id="table"></div>
@@ -59,6 +123,9 @@
     <script>
         $(document).ready(function (){
             $('.toast').toast('show');
+            {% if session_form.errors %}
+                $('.modal').modal('show');
+            {% endif %}
         });
 
     new gridjs.Grid({

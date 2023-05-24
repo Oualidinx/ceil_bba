@@ -5,10 +5,11 @@ from root import database
 from root.admin import admin_bp
 from root.models import Category, Course, CourseLanguage, Session, User, Subscription,LogsUserPrice \
                         ,Language, Level
-from root.forms import CategoryForm,AddCourseForm, SessionForm, EditCategoryForm,EnableSubscription, EditCourseForm, LanguageForm, EditLanguageForm
+from root.forms import CategoryForm,AddCourseForm, SessionForm, EditCategoryForm
+from root.forms import EditLevelForm, LevelForm, EnableSubscription, EditCourseForm, LanguageForm, EditLanguageForm
 import bleach
 import pandas as pd
-from flask_login import login_required, current_user
+from flask_login import login_required
 from sqlalchemy.sql import and_
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'dt', 'dd', 'table', 'tbody', 'thead',
                                       'section',
@@ -69,7 +70,43 @@ def new_category():
 @login_required
 def formation():
     courses =[obj.to_dict() for obj in Course.query.all()]
-    return render_template('formation.html', courses=courses)
+    session_form = SessionForm()
+    last_session = Session.query.order_by(Session.id.desc()).first()
+    print(last_session)
+    if session_form.validate_on_submit():
+        _session = Session()
+        _session.label = session_form.label.data
+        database.session.add(_session)
+        database.session.commit()
+        subscriptions = Subscription.query.join(Course, Subscription.fk_course_id == Course.id) \
+            .join(Session, Session.id == Course.fk_session_id) \
+            .filter(Session.id == last_session.id)
+        courses = Course.query.join(Session, Session.id == Course.fk_session_id).filter(
+            Session.id == last_session.id).all()
+
+        if courses and subscriptions:
+            for x in subscriptions:
+                database.session.delete(x)
+                database.session.commit()
+
+            for y in courses:
+                course_languages = CourseLanguage.query.join(Course, Course.id == CourseLanguage.fk_course_id) \
+                    .filter(CourseLanguage.fk_course_id == y.id) \
+                    .all()
+                if course_languages:
+                    for course_language in course_languages:
+                        database.session.delete(course_language)
+                        database.session.commit()
+                database.session.delete(y)
+                database.session.commit()
+        database.session.delete(last_session)
+        database.session.commit()
+
+        flash('Session ajoutée', 'success')
+        return redirect(url_for('admin_bp.formation'))
+    return render_template('formation.html', courses=courses,_session=Session.query.all()[-1],
+                           session_form=session_form)
+    # return render_template('formation.html', courses=courses, session_form = session_form)
 
 
 
@@ -79,8 +116,6 @@ def formation():
 def new_course():
     form = AddCourseForm()
     _session = Session.query.all()[-1]
-    session_form = SessionForm()
-    
     if form.validate_on_submit():
         course = Course()
         course.label = form.label.data
@@ -106,22 +141,14 @@ def new_course():
         database.session.commit()
         flash('Ajout avec succès', "success")
         return redirect(url_for('admin_bp.new_course'))
-    return render_template('new_course.html', form = form,_session = _session, session_form = session_form)
+    return render_template('new_course.html', form = form,_session = _session)
 
 
 @admin_bp.get('/session/new')
 @admin_bp.post('/session/new')
 @login_required
 def new_session():
-    session_form = SessionForm()
-    if session_form.validate_on_submit():
-        _session = Session()
-        _session.label = session_form.label.data
-        database.session.add(_session)
-        database.session.commit()
-        flash('Session ajoutée', 'success')
-        return redirect(url_for('admin_bp.new_course'))
-    return render_template('new_course.html',form = AddCourseForm(), session_form = session_form)
+    pass
 
 
 @admin_bp.get('/students/<int:course_id>/<int:session_id>')
@@ -373,6 +400,53 @@ def edit_language(language_id):
 def languages():
     _languages = [obj.to_dict() for obj in Language.query.all()]
     return render_template('languages.html', liste = _languages)
+
+
+@admin_bp.get('/levels')
+@login_required
+def levels():
+    _levels = [obj.to_dict() for obj in Level.query.all()]
+    return render_template('levels.html', liste = _levels)
+
+
+@admin_bp.get('/levels/add')
+@admin_bp.post('/levels/add')
+@login_required
+def add_level():
+    form = LevelForm()
+    if form.validate_on_submit():
+        level = Level(label = form.label.data)
+        database.session.add(level)
+        database.session.commit()
+        flash('Niveau ajoutée avec succès', "success")
+        return redirect(url_for('admin_bp.add_level'))
+    return render_template('new_level.html', form = form)
+
+from sqlalchemy import func
+@admin_bp.get('/level/<int:level_id>/edit')
+@admin_bp.post('/level/<int:level_id>/edit')
+@login_required
+def edit_level(level_id):
+    form = EditLevelForm()
+    l = Level.query.get(level_id)
+    if not l:
+        abort(404)
+    if request.method == "GET":
+        form.label.data = l.label
+    if form.validate_on_submit():
+        level = Level.query.filter(func.lower(Level.label) == func.lower(form.label.data)).first()
+        if level and level.id != l.id:
+            flash(f'Le niveau {form.label.data} déjà existe', 'warning')
+            return render_template('new_level.html', form = form)
+        l = form.label.data
+        database.session.add(l)
+        database.session.commit()
+        flash('Mise à jour avec succès')
+        redirect(url_for('admin_bp.levels'))
+    return render_template('new_level.html', form = form)
+
+
+
 
 
 

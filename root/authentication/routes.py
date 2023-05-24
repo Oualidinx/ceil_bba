@@ -85,7 +85,7 @@ def register():
     os.chdir('static')
     os.chdir('uploads')
     file = open('../../static/uploads/algeria_postcodes.json','r')
-    data = json.load(file)
+    data = json.load(file, encodings="utf8")
     states = [(x['wilaya_name'], x['wilaya_code']+'-'+x['wilaya_name']) for x in data]
     states = list(dict.fromkeys(states))
     os.chdir('..')

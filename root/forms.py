@@ -199,3 +199,19 @@ class LanguageForm(FlaskForm):
 
 class EditLanguageForm(LanguageForm):
     submit = SubmitField('Mise à jour')
+
+from sqlalchemy import func
+class LevelForm(FlaskForm):
+    label = StringField('Nomination du Niveau: ', validators=[DataRequired('Champs obligatoire')])
+    submit = SubmitField('Ajouter')
+
+    def validate_label(self, label):
+        level = Level.query.filter(func.lower(Level.label) == func.lower(label.data)).first()
+        if level:
+            raise ValidationError('Niveau déjà existe')
+
+
+class EditLevelForm(LevelForm):
+    submit = SubmitField('Mise à jour')
+    def validate_label(self, label):
+        pass

@@ -83,6 +83,11 @@ class Level(db.Model):
     def __repr__(self):
         return f'{self.label}'
 
+    def to_dict(self):
+        return dict(
+            id=self.id,
+            label = self.label
+        )
 class User(UserMixin, db.Model):
     __tablename__="user"
     id = db.Column(db.Integer, primary_key=True)
