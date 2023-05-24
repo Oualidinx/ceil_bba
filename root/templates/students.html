@@ -31,8 +31,8 @@
                                 {% endif %} </h4>
                             </div>
 
-                            <div class="col-md" style="text-align: center;">
-                                <a class="btn btn-md btn-success" href="{% if formation %}{{ url_for('admin_bp.get_students', course_id = formation.id) }}
+                            <div class="col-md d-flex justify-content-end">
+                                <a class="btn btn-md btn-success rounded rounded-pill" href="{% if formation %}{{ url_for('admin_bp.get_students', course_id = formation.id) }}
                                                                         {% else %} {{ url_for('admin_bp.all_students_csv') }}
                                                                         {% endif %}">Exporter la liste</a>
                             </div>

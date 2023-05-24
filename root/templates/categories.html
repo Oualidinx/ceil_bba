@@ -12,7 +12,7 @@
         </style>
 {% endblock %}
 {% block main_tag %}
-    <div class="container">
+    <div class="container mt-5">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category , message in messages %}
@@ -29,7 +29,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div class="row">
+        <div class="row p-5">
             <div class="col">
                 <div class="card">
                     <div class="card-header card-header-primary">
@@ -37,9 +37,9 @@
 
                     </div>
                     <div class="card-body">
-                        <div class="btn-group hstack gap-3">
-                            <div class="border ms-auto">
-                                <a class="btn btn-md btn-primary" href="{{ url_for('admin_bp.new_category') }}">Nouveau</a>
+                        <div class="btn-group gap-3 d-flex justify-content-end">
+                            <div class="ms-auto">
+                                <a class="btn btn-md btn-primary rounded rounded-pill" href="{{ url_for('admin_bp.new_category') }}">Nouveau</a>
                             </div>
                         </div>
 
